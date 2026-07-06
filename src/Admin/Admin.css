@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+
+.multi-border {
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(to right, #d3a9fa, #adcafa, #faa7d1) border-box;
+  border: 2px solid transparent;
+  border-radius: 16px;
+}
