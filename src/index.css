@@ -590,6 +590,16 @@ html {
 }
 
 /* Testimonials */
+
+.testi-swiper .swiper-slide {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.testi-swiper .swiper-slide-visible {
+  opacity: 1;
+}
+
 .testi-section {
   padding: 80px 40px;
   background: #f4f4f4;
