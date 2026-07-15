@@ -26,7 +26,7 @@ import AddEditService from "./Admin/Pages/AddEditService";
 import AdminWhatWeDo from "./Admin/Pages/AdminWhatWeDo";
 import AddEditWhatWeDo from "./Admin/Pages/AddEditWhatWeDo";
 import BlogPosts from "./Admin/Pages/BlogPosts";
-import AddEditBlogPost from "./Admin/Pages/AddeditBlogPost";
+import AddEditBlogPost from "./Admin/Pages/AddEditBlogPost";
 import AdminPortfolio from "./Admin/Pages/AdminPortfolio";
 import AddEditPortfolio from "./Admin/Pages/AddEditPortfolio";
 import AdminCaseStudies from "./Admin/Pages/AdminCaseStudies";
