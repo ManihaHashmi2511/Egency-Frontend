@@ -1,63 +1,29 @@
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedin,
-  FaLinkedinIn,
-  FaTwitter,
-} from "react-icons/fa";
-
-const team = [
-  {
-    id: 1,
-    name: "James Anderson",
-    role: "Graphic Designer",
-    image: "/team/member-1.jpg",
-  },
-  {
-    id: 2,
-    name: "Sophia Martinez",
-    role: "UI/UX Designer",
-    image: "/team/member-2.jpg",
-  },
-  {
-    id: 3,
-    name: "Michael Chen",
-    role: "Web Developer",
-    image: "/team/member-3.jpg",
-  },
-  {
-    id: 4,
-    name: "Emily Johnson",
-    role: "Content Strategist",
-    image: "/team/member-4.jpg",
-  },
-  {
-    id: 5,
-    name: "David Wilson",
-    role: "Digital Marketer",
-    image: "/team/member-5.jpg",
-  },
-  {
-    id: 6,
-    name: "Olivia Brown",
-    role: "Brand Strategist",
-    image: "/team/member-6.jpg",
-  },
-  {
-    id: 7,
-    name: "Daniel Lee",
-    role: "3D Animator",
-    image: "/team/member-7.jpg",
-  },
-  {
-    id: 8,
-    name: "Hannah Davis",
-    role: "Social Media Manager",
-    image: "/team/member-8.jpg",
-  },
-];
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { FaLinkedin } from "react-icons/fa";
+import { API_URL } from "../utils/apiUrl";
 
 export default function Team() {
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/team`)
+      .then((res) => {
+        setTeam(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (team.length === 0)
+    return <p className="text-center py-10">No team members found.</p>;
+
   return (
     <section className="team-section">
       {/* Heading */}
@@ -71,7 +37,7 @@ export default function Team() {
       <div className="team-grid">
         {team.map((member, index) => (
           <div
-            key={member.id}
+            key={member._id}
             className="team-card"
             data-aos="fade-up"
             data-aos-delay={index * 100}
@@ -81,9 +47,14 @@ export default function Team() {
 
               {/* LinkedIn Overlay */}
               <div className="team-overlay">
-                <a href="#" className="team-linkedin-btn">
+                <a
+                  href={member.linkedin || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="team-linkedin-btn"
+                >
                   <span>Linked</span>
-                   <FaLinkedin className="W-6 h-6" />
+                  <FaLinkedin className="W-6 h-6" />
                 </a>
               </div>
             </div>

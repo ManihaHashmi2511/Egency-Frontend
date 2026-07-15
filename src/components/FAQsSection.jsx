@@ -1,44 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaPlus } from "react-icons/fa";
-
-const faqs = [
-  {
-    question: "How long does a typical project take to complete?",
-    answer:
-      "Project timelines depend on scope and complexity, but most projects take between 4 to 8 weeks from discovery to launch. We always share a clear timeline before starting work.",
-  },
-  {
-    question: "Do you provide support after the project is launched?",
-    answer:
-      "Yes, we offer ongoing support and maintenance packages after launch to ensure your website or application continues to run smoothly and stays up to date.",
-  },
-  {
-    question: "Can you work with our existing brand guidelines?",
-    answer:
-      "Absolutely. We can work within your existing brand identity, or help you build a new one from scratch if you don't have one yet.",
-  },
-  
-  {
-    question: "How do we get started working together?",
-    answer:
-      "Simply reach out through our contact form or book a call. We'll discuss your goals, requirements, and timeline, then prepare a proposal tailored to your project.",
-  },
-];
+import { API_URL } from "../utils/apiUrl";
 
 const FAQsSection = () => {
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   // Pehla FAQ (index 0) by default open rahega
   const [openIndex, setOpenIndex] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/faqs`)
+      .then((res) => {
+        setFaqs(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        setLoading(false);
+      });
+  }, []);
 
   const toggleFaq = (index) => {
     // Agar already open hai to band kardo, warna usi ko open kardo
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (faqs.length === 0)
+    return <p className="text-center py-10">No FAQs found.</p>;
+
   return (
     <section id="faq" className="faq-section">
       <div className="faq-container">
         {/* Left side - Questions */}
+        <div className="faq-right">
+          <img src="/faq-img.jpg" alt="Our team at work" />
+        </div>
+        {/* Right side - Image */}
         <div className="faq-left">
           <h2>
             Frequently Asked <span className="highlight">Questions</span>
@@ -54,7 +56,7 @@ const FAQsSection = () => {
 
               return (
                 <div
-                  key={index}
+                  key={faq._id}
                   className={`faq-item ${isOpen ? "faq-active" : ""}`}
                 >
                   <button
@@ -84,14 +86,6 @@ const FAQsSection = () => {
               );
             })}
           </div>
-        </div>
-
-        {/* Right side - Image */}
-        <div className="faq-right">
-          <img
-            src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80"
-            alt="Our team at work"
-          />
         </div>
       </div>
     </section>

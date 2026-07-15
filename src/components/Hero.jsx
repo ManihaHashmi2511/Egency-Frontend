@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Hero() {
   useEffect(() => {
-    typewriter(".heading-typing", ["Egency Digital", "Egency Digital"], 200);
+    typewriter(".heading-typing", ["EGENCY DIGITAL", "EGENCY DIGITAL"], 200);
   }, []);
 
   return (

@@ -1,60 +1,53 @@
-import { MdArrowOutward  } from "react-icons/md";
+import { useEffect, useState } from "react";
+import { MdArrowOutward } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
-const projects = [
-  {
-    id: 1,
-    image: "/portfolio/hero-banner.jpg",
-    title: "Brand Identity Design",
-    category: "Graphic Designing",
-  },
-  {
-    id: 2,
-    image: "/portfolio/portfolio-2.jpg",
-    title: "E-Commerce Website",
-    category: "Web Development",
-  },
-  {
-    id: 3,
-    image: "/portfolio/portfolio-3.jpg",
-    title: "Mobile App UI",
-    category: "UI/UX Design",
-  },
-  {
-    id: 4,
-    image: "/portfolio/portfolio-4.jpg",
-    title: "Social Media Campaign",
-    category: "Digital Marketing",
-  },
-  {
-    id: 5,
-    image: "/portfolio/portfolio-5.jpg",
-    title: "Logo & Branding",
-    category: "Branding",
-  },
-  {
-    id: 6,
-    image: "/portfolio/portfolio-6.jpg",
-    title: "3D Product Visualization",
-    category: "3D Modeling",
-  },
-];
+import axios from "axios";
+import { API_URL } from "../utils/apiUrl";
 
 function Portfolio() {
   const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/portfolio`)
+      .then((res) => {
+        setProjects(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (projects.length === 0)
+    return <p className="text-center py-10">No projects found.</p>;
 
   return (
     <section className="px-[6%] py-15 mb-10">
-      <h2 data-aos="fade-right" data-aos-delay="100" data-aos-duration="1000" className="section-heading text-[33px] text-[#2e2e2e] uppercase font-bold text-center mb-8.75">
+      <h2
+        data-aos="fade-right"
+        data-aos-delay="100"
+        data-aos-duration="1000"
+        className="section-heading text-[33px] text-[#2e2e2e] uppercase font-bold text-center mb-8.75"
+      >
         Our Portfolio
       </h2>
 
-      <div className="portfolio-grid-wrapper grid grid-cols-3 gap-5 pt-3" data-aos="fade-in" data-aos-delay="300" data-aos-duration="1000" >
+      <div
+        className="portfolio-grid-wrapper grid grid-cols-3 gap-5 pt-3"
+        data-aos="fade-in"
+        data-aos-delay="300"
+        data-aos-duration="1000"
+      >
         {projects.map((project) => (
           <div
-            key={project.id}
+            key={project._id}
             className="portfolio-card relative h-81.25 rounded-[20px] overflow-hidden cursor-pointer"
-            onClick={() => navigate(`/portfolio/${project.id}`)}
+            onClick={() => navigate(`/portfolio/${project._id}`)}
           >
             <img
               src={project.image}

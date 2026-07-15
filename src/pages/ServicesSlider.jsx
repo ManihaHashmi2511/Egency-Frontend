@@ -1,62 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
-
-const services = [
-  {
-    title: "UI/UX Design",
-    desc: "Crafting intuitive, beautiful interfaces that users genuinely love to use and engage with every single day.",
-    image: "/services/ui-ux.jpg",
-  },
-  {
-    title: "Web Development",
-    desc: "Building fast, secure, and scalable websites that perform smoothly across all devices and platforms.",
-    image: "/services/web-dev.jpg",
-  },
-  {
-    title: "Graphic Designing",
-    desc: "Designing creative visuals, logos, and brand assets that capture attention and leave a lasting impression.",
-    image: "/services/graphic-design.jpg",
-  },
-  {
-    title: "Digital Marketing",
-    desc: "Data-driven strategies designed to grow your audience, boost engagement, and increase overall conversions.",
-    image: "/services/digital-markiting.jpg",
-  },
-  {
-    title: "Branding & Designing",
-    desc: "Creating memorable brand visuals and identities that truly resonate with your target audience.",
-    image: "/services/brand-design.jpg",
-  },
-  {
-    title: "Content Creation",
-    desc: "Producing engaging multimedia content that powers and elevates your digital marketing channels.",
-    image: "/services/content-create.jpg",
-  },
-  {
-    title: "Video Editing & Animations",
-    desc: "Leveraging high-quality video content to tell your brand's story and boost conversions.",
-    image: "/services/vid-editing.jpg",
-  },
-  {
-    title: "3D Modeling",
-    desc: "Converting your creative ideas into stunning, tangible visual assets and detailed product renders.",
-    image: "/services/3d-model.jpg",
-  },
-  {
-    title: "Social Media Automation",
-    desc: "Automating your content scheduling, posts, and performance insights for maximum efficiency.",
-    image: "/services/social-med.jpg",
-  },
-  {
-    title: "Influencer Marketing",
-    desc: "Connecting your brand with the right creators to expand reach and build trust.",
-    image: "/services/influencer-markit.jpg",
-  },
-];
+import { API_URL } from "../utils/apiUrl";
 
 const ServicesSlider = ({ bgColor = "#111111" }) => {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(3);
+  const [step, setStep] = useState(0); 
+
+  const trackRef = useRef(null);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/services`)
+      .then((res) => {
+        setServices(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
     const updateCards = () => {
@@ -67,7 +34,30 @@ const ServicesSlider = ({ bgColor = "#111111" }) => {
     return () => window.removeEventListener("resize", updateCards);
   }, []);
 
-  const maxIndex = services.length - cardsToShow;
+  useEffect(() => {
+    const measureStep = () => {
+      if (trackRef.current && trackRef.current.children.length > 1) {
+        const firstCard = trackRef.current.children[0];
+        const secondCard = trackRef.current.children[1];
+        const gapPx = secondCard.offsetLeft - firstCard.offsetLeft;
+        setStep(gapPx);
+      }
+    };
+    // thoda delay taaki images/layout settle ho jaye
+    const timer = setTimeout(measureStep, 50);
+    window.addEventListener("resize", measureStep);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", measureStep);
+    };
+  }, [services, cardsToShow]);
+
+  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (services.length === 0)
+    return <p className="text-center py-10">No services found.</p>;
+
+  const maxIndex = Math.max(services.length - cardsToShow, 0);
+
   const nextSlide = () => {
     setIndex((prev) => (prev < maxIndex ? prev + 1 : prev));
   };
@@ -84,10 +74,6 @@ const ServicesSlider = ({ bgColor = "#111111" }) => {
         data-aos-delay="100"
         data-aos-duration="1000"
       >
-        {/* <h2 className="text-white text-[30px] font-medium" style={{ color: bgColor === "#f4f4f4" ? "#111" : "#ffffff" }}>
-          <span className="highlight">Best services</span> for your business
-        </h2> */}
-
         <div className="services-buttons">
           <button onClick={prevSlide} className="slider-btn">
             <FaArrowLeftLong />
@@ -107,8 +93,9 @@ const ServicesSlider = ({ bgColor = "#111111" }) => {
       >
         <div
           className="slider-track"
+          ref={trackRef}
           style={{
-            transform: `translateX(-${index * (100 / cardsToShow)}%)`,
+            transform: `translateX(-${index * step}px)`,
           }}
         >
           {services.map((service, i) => {
@@ -116,7 +103,7 @@ const ServicesSlider = ({ bgColor = "#111111" }) => {
 
             return (
               <div
-                key={i}
+                key={service._id}
                 className={`service-card ${isActive ? "active" : ""}`}
                 style={{ backgroundImage: `url(${service.image})` }}
               >

@@ -1,15 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from "react-icons/fa";
 import WorldMap from "../components/WorldMap";
 import Navbar2 from "../components/Navbar2";
 import Footer from "../components/Footer";
-
-const stats = [
-  { number: "500+", label: "Projects Done" },
-  { number: "10K+", label: "Satisfied Clients" },
-  { number: "15+", label: "Services" },
-  { number: "98%", label: "Growth Rate" },
-];
+import { API_URL } from "../utils/apiUrl";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -19,14 +14,49 @@ const Contact = () => {
     message: "",
   });
 
+  const [status, setStatus] = useState({ type: "", message: "" }); // type: "success" | "error"
+  const [submitting, setSubmitting] = useState(false);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setSubmitting(true);
+    setStatus({ type: "", message: "" });
+
+    axios
+      .post(`${API_URL}/contact`, formData)
+      .then((res) => {
+        setStatus({
+          type: "success",
+          message: res.data.message || "Message sent successfully!",
+        });
+        // Form reset karo submit hone ke baad
+        setFormData({ name: "", email: "", phone: "", message: "" });
+        setSubmitting(false);
+      })
+      .catch((err) => {
+        console.log("Error:", err);
+        setStatus({
+          type: "error",
+          message: "Something went wrong. Please try again.",
+        });
+        setSubmitting(false);
+      });
   };
+
+  useEffect(() => {
+    if (status.message) {
+      const timer = setTimeout(() => {
+        setStatus({ type: "", message: "" });
+      }, 4000);
+
+      // Cleanup - agar component unmount ho ya naya status aaye to purana timer cancel ho
+      return () => clearTimeout(timer);
+    }
+  }, [status.message]);
 
   return (
     <div>
@@ -88,6 +118,19 @@ const Contact = () => {
             <div className="contact-form-wrapper" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
               <h3>Send us a Message</h3>
 
+              {/* Status message - success ya error */}
+              {status.message && (
+                <p
+                  className={
+                    status.type === "success"
+                      ? "form-status-success"
+                      : "form-status-error"
+                  }
+                >
+                  {status.message}
+                </p>
+              )}
+
               <form onSubmit={handleSubmit} className="contact-form">
                 <div className="form-row">
                   <div className="form-group">
@@ -140,8 +183,9 @@ const Contact = () => {
                 <button
                   type="submit"
                   className="btn-primary contact-submit-btn"
+                  disabled={submitting}
                 >
-                  Send Message
+                  {submitting ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>

@@ -7,6 +7,9 @@ body {
 html {
   scroll-behavior: smooth;
 }
+h2{
+  text-transform: uppercase;
+}
 
 /* Navbar */
 .nav-link {
@@ -591,14 +594,6 @@ html {
 
 /* Testimonials */
 
-.testi-swiper .swiper-slide {
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.testi-swiper .swiper-slide-visible {
-  opacity: 1;
-}
 
 .testi-section {
   padding: 80px 40px;
@@ -623,6 +618,7 @@ html {
 .testi-swiper {
   width: 100%;
   padding: 20px 0 40px 0;
+  overflow: hidden !important;
 }
 
 .testi-swiper .swiper-slide {
@@ -630,8 +626,18 @@ html {
   transition: opacity 0.4s ease;
 }
 
-.testi-swiper .swiper-slide-active {
+.testi-swiper .swiper-slide-active,
+.testi-swiper .swiper-slide-next {
   opacity: 1;
+}
+.testi-swiper.is-beginning {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.testi-swiper.is-beginning .swiper-wrapper {
+  transform: translate3d(0px, 0, 0) !important;
+  transition: none !important;
 }
 
 .testi-card {
@@ -1816,7 +1822,7 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #ff0000;
+  color: #da0a0a;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -2300,57 +2306,64 @@ html {
 /* Section 4 */
 .pd-results-section {
   margin-bottom: 80px;
+  padding: 0;
 }
 
 .pd-results-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
 .pd-result-card {
-  background: #fff;
-  border-radius: 16px;
-  width: 250px;
-  height: 250px;
   text-align: center;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
-  transition: all 1s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
-  cursor: pointer;
+  gap: 10px;
+  padding: 30px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
 }
 
 .pd-result-card:hover {
-  background: #ee2233;
   transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(230, 57, 70, 0.3);
+  box-shadow: 0 12px 32px rgba(230, 57, 70, 0.15);
+}
+.pd-result-icon {
+  width: 72px;
+  height: 72px;
+  background-color: #fff0f1;
+  color: #e63946;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  transition: all 0.3s ease;
+}
+
+.pd-result-card:hover .pd-result-icon {
+  background-color: #e63946;
+  color: #ffffff;
 }
 
 .pd-result-number {
-  font-size: 47px;
-  font-weight: 800;
-  color: #ee2233;
-  margin-bottom: 8px;
-  transition: color 0.6s ease;
-}
-
-.pd-result-card:hover .pd-result-number {
-  color: #fff;
+  font-size: 38px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1;
 }
 
 .pd-result-label {
-  font-size: 18px;
-  color: #555;
+  font-size: 16px;
+  color: #777777;
   font-weight: 500;
-  transition: color 0.4s ease;
-}
-
-.pd-result-card:hover .pd-result-label {
-  color: #fff;
 }
 
 /* Section 5 */
@@ -2557,6 +2570,25 @@ html {
   cursor: pointer;
   align-self: flex-start;
 }
+
+.form-status-success {
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.form-status-error {
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
 
 /*
 /* ===== World Map Section ===== */

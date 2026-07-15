@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -10,8 +10,8 @@ import {
 } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/navigation";
+import { API_URL } from "../utils/apiUrl";
 
-// Star rating
 function Stars({ rating }) {
   return (
     <div className="flex items-center gap-1 mt-1">
@@ -25,81 +25,87 @@ function Stars({ rating }) {
 }
 
 export default function Testimonials() {
-  // Static array hata di, ab API se aayega data
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const swiperRef = useRef(null);
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/testimonials")
+      .get(`${API_URL}/testimonials`)
       .then((res) => {
         setTestimonials(res.data);
         setLoading(false);
       })
       .catch((err) => {
-        console.log("Error fetching testimonials:", err);
+        console.log("Error:", err);
         setLoading(false);
       });
   }, []);
 
-  // Jab tak data aa raha hai
   if (loading) return <p className="text-center py-10">Loading...</p>;
-
-  // Agar database mein koi data nahi
   if (testimonials.length === 0)
     return <p className="text-center py-10">No testimonials found.</p>;
 
   return (
     <section className="testi-section">
+
       {/* Heading */}
       <div className="text-center mb-12" data-aos="fade-up">
         <h2 className="testi-heading">
-          What <span className="text-[#e0141e]">Our Clients</span> Says About
-          Us?
+          What <span className="text-[#e0141e]">Our Clients</span> Says About Us?
         </h2>
       </div>
 
-      {/* Mobile Arrows — sirf small screen par */}
+      {/* Mobile Arrows */}
       <div className="testi-arrows-mobile">
-        <button className="testi-arrow testi-prev">
+        <button
+          className="testi-arrow"
+          style={{ visibility: isBeginning ? "hidden" : "visible" }}
+          onClick={() => swiperRef.current?.slidePrev()}
+        >
           <FaArrowLeft />
         </button>
-        <button className="testi-arrow testi-next">
+        <button
+          className="testi-arrow"
+          onClick={() => swiperRef.current?.slideNext()}
+        >
           <FaArrowRight />
         </button>
       </div>
 
-      {/* Swiper Slider */}
+      {/* Swiper Wrapper */}
       <div className="testi-wrapper">
-        {/* Desktop Arrows — sirf large screen par */}
-        <button className="testi-arrow testi-prev testi-arrow-desktop">
+
+        {/* Desktop Left Arrow */}
+        <button
+          className="testi-arrow testi-arrow-desktop"
+          style={{ visibility: isBeginning ? "hidden" : "visible" }}
+          onClick={() => swiperRef.current?.slidePrev()}
+        >
           <FaArrowLeft />
         </button>
 
         <Swiper
           key={testimonials.length}
-          modules={[Autoplay, Navigation]}
+          modules={[Autoplay]}
+          centeredSlides={true}
           slidesPerView={1.4}
           spaceBetween={20}
-          loop={testimonials.length > 1}
-          initialSlide={0}
-          speed={1000}
-          autoplay={{ delay: 10000, disableOnInteraction: false }}
-          navigation={{
-            prevEl: ".testi-prev",
-            nextEl: ".testi-next",
-          }}
+          loop={false}
+          speed={800}
+          autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          slideToClickedSlide={false}
           breakpoints={{
-            0: { slidesPerView: 1.1, centeredSlides: true },
-            768: { slidesPerView: 1.3, centeredSlides: true },
-            1024: { slidesPerView: 1.4, centeredSlides: true },
+            0: { slidesPerView: 1.1 },
+            768: { slidesPerView: 1.3 },
+            1024: { slidesPerView: 1.4 },
           }}
-          observer={true}
-          observeParents={true}
-          className="testi-swiper"
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+          onSlideChange={(swiper) => setIsBeginning(swiper.isBeginning)}
+          className={`testi-swiper ${isBeginning ? "is-beginning" : ""}`}
         >
           {testimonials.map((t) => (
-            // MongoDB ka _id use kar rahe hain key mein
             <SwiperSlide key={t._id}>
               <div className="testi-card">
                 <div className="testi-img-side">
@@ -116,10 +122,14 @@ export default function Testimonials() {
           ))}
         </Swiper>
 
-        {/* Desktop Arrows — sirf large screen par */}
-        <button className="testi-arrow testi-next testi-arrow-desktop">
+        {/* Desktop Right Arrow */}
+        <button
+          className="testi-arrow testi-arrow-desktop"
+          onClick={() => swiperRef.current?.slideNext()}
+        >
           <FaArrowRight />
         </button>
+
       </div>
     </section>
   );

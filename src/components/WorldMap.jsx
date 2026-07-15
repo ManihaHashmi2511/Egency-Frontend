@@ -13,7 +13,7 @@ import {HiOutlineBuildingOffice2} from "react-icons/hi2"
 const locations = [
   { name: "New York", area: "United States", coordinates: [-74.006, 40.7128] },
   { name: "London", area: "United Kingdom", coordinates: [-0.1276, 51.5074] },
-  { name: "Dubai", area: "United Arab Emirates", coordinates: [55.2708, 25.2048] },
+  { name: "Abu Dhabi", area: "United Arab Emirates", coordinates: [55.2708, 25.2048] },
   { name: "Lahore", area: "Pakistan", coordinates: [74.3587, 31.5204] },
   { name: "Brazil", area: "Rio De Janeiro", coordinates: [-43.1729, -22.9068] },
   { name: "Sydney", area: "Australia", coordinates: [151.2093, -33.8688] },
