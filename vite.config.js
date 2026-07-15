@@ -5,7 +5,9 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
-  optimizeDeps: {
-    include: ['react-simple-maps', 'prop-types', 'd3-geo']
-  }
-});
+  css: {
+    lightningcss: {
+      errorRecovery: true,
+    },
+  },
+})
