@@ -26,7 +26,7 @@ const Signup = () => {
     setLoading(true);
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/users/signup`,
+        `${API_URL}/users/signup`,
         formData,
       );
       Swal.fire({

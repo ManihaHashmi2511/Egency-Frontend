@@ -6,11 +6,15 @@ const AdminLayout = ({ title, children }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Ek hi button dono kaam karta hai: desktop pe collapse/expand, mobile pe drawer open/close
   const toggleSidebar = () => {
+  if (window.innerWidth >= 1024) {
+    // Desktop: sirf collapse/expand
     setCollapsed(!collapsed);
+  } else {
+    // Mobile: sirf drawer open/close
     setMobileOpen(!mobileOpen);
-  };
+  }
+};
 
   return (
     <div className="h-screen w-screen bg-gray-200 p-2 sm:p-4 flex gap-4 overflow-hidden">
