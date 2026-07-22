@@ -1,10 +1,41 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from "react-icons/fa";
+import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import WorldMap from "../components/WorldMap";
 import Navbar2 from "../components/Navbar2";
 import Footer from "../components/Footer";
 import { API_URL } from "../utils/apiUrl";
+
+// Common fake/placeholder domains - inhe reject karte hain (jaise test123@test.com)
+const FAKE_EMAIL_DOMAINS = [
+  "test.com",
+  "example.com",
+  "fake.com",
+  "sample.com",
+  "mailinator.com",
+  "yopmail.com",
+  "tempmail.com",
+  "temp-mail.org",
+  "guerrillamail.com",
+  "10minutemail.com",
+  "trashmail.com",
+  "test.test",
+  "email.com",
+  "domain.com",
+];
+
+const validateEmail = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regex.test(email)) return "Please enter a valid email address";
+
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (FAKE_EMAIL_DOMAINS.includes(domain)) {
+    return "Please use a valid email address";
+  }
+  return "";
+};
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,15 +45,39 @@ const Contact = () => {
     message: "",
   });
 
-  const [status, setStatus] = useState({ type: "", message: "" }); // type: "success" | "error"
+  const [errors, setErrors] = useState({ email: "", phone: "" });
+  const [status, setStatus] = useState({ type: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (e.target.name === "email" && errors.email) {
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }
+  };
+
+  const handlePhoneChange = (value) => {
+    setFormData({ ...formData, phone: value || "" });
+    if (errors.phone) {
+      setErrors((prev) => ({ ...prev, phone: "" }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const emailError = validateEmail(formData.email);
+    const phoneError = !formData.phone
+      ? "Phone number is required"
+      : !isValidPhoneNumber(formData.phone)
+        ? "Please enter a valid phone number for the selected country"
+        : "";
+
+    if (emailError || phoneError) {
+      setErrors({ email: emailError, phone: phoneError });
+      return;
+    }
+
     setSubmitting(true);
     setStatus({ type: "", message: "" });
 
@@ -33,7 +88,6 @@ const Contact = () => {
           type: "success",
           message: res.data.message || "Message sent successfully!",
         });
-        // Form reset karo submit hone ke baad
         setFormData({ name: "", email: "", phone: "", message: "" });
         setSubmitting(false);
       })
@@ -41,7 +95,9 @@ const Contact = () => {
         console.log("Error:", err);
         setStatus({
           type: "error",
-          message: "Something went wrong. Please try again.",
+          message:
+            err.response?.data?.message ||
+            "Something went wrong. Please try again.",
         });
         setSubmitting(false);
       });
@@ -52,8 +108,6 @@ const Contact = () => {
       const timer = setTimeout(() => {
         setStatus({ type: "", message: "" });
       }, 4000);
-
-      // Cleanup - agar component unmount ho ya naya status aaye to purana timer cancel ho
       return () => clearTimeout(timer);
     }
   }, [status.message]);
@@ -62,11 +116,14 @@ const Contact = () => {
     <div>
       <Navbar2 />
       <div className="contact-page">
-        {/* ===== Top Section - Info + Form ===== */}
         <section className="contact-top">
           <div className="contact-top-inner">
-            {/* Left - Contact Info */}
-            <div className="contact-info" data-aos="fade-right" data-aos-duration="1000" data-aos-delay="200">
+            <div
+              className="contact-info"
+              data-aos="fade-right"
+              data-aos-duration="1000"
+              data-aos-delay="200"
+            >
               <p className="contact-tag">GET IN TOUCH</p>
               <h2>
                 Let's Work <span className="highlight">Together</span>
@@ -83,7 +140,7 @@ const Contact = () => {
                   </div>
                   <h4>Email Address</h4>
                   <p>hello@egencydigital.com</p>
-                  <p>support@egencydigital.com</p>
+                  <p>egencydigitalinfo@gmail.com</p>
                 </div>
 
                 <div className="info-bento-card">
@@ -91,7 +148,7 @@ const Contact = () => {
                     <FaMapMarkerAlt />
                   </div>
                   <h4>Office Location</h4>
-                  <p>123 Business Bay, Lahore, Pakistan</p>
+                  <p>Jinnah Colony, Faisalabad, Pakistan</p>
                 </div>
 
                 <div className="info-bento-card">
@@ -99,7 +156,7 @@ const Contact = () => {
                     <FaClock />
                   </div>
                   <h4>Working Hours</h4>
-                  <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                  <p>Mon - Fri: 10:00 AM - 5:00 PM</p>
                   <p>Sat - Sun: Closed</p>
                 </div>
 
@@ -108,17 +165,19 @@ const Contact = () => {
                     <FaPhone />
                   </div>
                   <h4>Phone Number</h4>
-                  <p>+92 300 1234567</p>
-                  <p>+92 321 7654321</p>
+                  <p>+92 325 0525254</p>
                 </div>
               </div>
             </div>
 
-            {/* Right - Contact Form */}
-            <div className="contact-form-wrapper" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+            <div
+              className="contact-form-wrapper"
+              data-aos="fade-left"
+              data-aos-duration="1000"
+              data-aos-delay="200"
+            >
               <h3>Send us a Message</h3>
 
-              {/* Status message - success ya error */}
               {status.message && (
                 <p
                   className={
@@ -131,7 +190,7 @@ const Contact = () => {
                 </p>
               )}
 
-              <form onSubmit={handleSubmit} className="contact-form">
+              <form onSubmit={handleSubmit} className="contact-form" noValidate>
                 <div className="form-row">
                   <div className="form-group">
                     <label>Your Name</label>
@@ -154,18 +213,26 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                     />
+                    {errors.email && (
+                      <p className="field-error">{errors.email}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="form-group">
                   <label>Phone Number</label>
-                  <input
-                    type="text"
-                    name="phone"
-                    placeholder="+92 300 0000000"
+                  <PhoneInput
+                    international
+                    defaultCountry="PK"
+                    limitMaxLength
                     value={formData.phone}
-                    onChange={handleChange}
+                    onChange={handlePhoneChange}
+                    placeholder="300 1234567"
+                    className="custom-phone-input"
                   />
+                  {errors.phone && (
+                    <p className="field-error">{errors.phone}</p>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -192,7 +259,6 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* ===== Bottom Section - Map ===== */}
         <WorldMap />
       </div>
       <Footer />

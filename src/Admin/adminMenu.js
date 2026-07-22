@@ -10,10 +10,12 @@ import {
   MdOutlineFolderSpecial,
   MdOutlineMailOutline,
   MdOutlineSettings,
+  MdOutlineCampaign,
 } from "react-icons/md";
 
 export const menuItems = [
   { key: "always", label: "Dashboard", icon: MdSpaceDashboard, path: "/admin/dashboard" },
+  { key: "comingsoon", label: "Coming Soon Banner", icon: MdOutlineCampaign, path: "/admin/coming-soon" },
   { key: "testimonials", label: "Testimonials", icon: MdOutlineRateReview, path: "/admin/testimonials" },
   { key: "team", label: "Team Members", icon: MdOutlineGroups, path: "/admin/team" },
   { key: "faqs", label: "FAQs", icon: MdOutlineQuestionAnswer, path: "/admin/faqs" },

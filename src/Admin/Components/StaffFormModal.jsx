@@ -12,6 +12,7 @@ import {
 } from "react-icons/md";
 
 const PERMISSION_MODULES = [
+  { key: "comingsoon", label: "Coming Soon Banner" },
   { key: "testimonials", label: "Testimonials" },
   { key: "team", label: "Team Members" },
   { key: "faqs", label: "FAQs" },

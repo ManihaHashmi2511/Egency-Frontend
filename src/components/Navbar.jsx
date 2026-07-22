@@ -87,18 +87,18 @@ export default function Navbar() {
       <div
         className={`mobile-menu md:hidden bg-black/90 px-6 ${menuOpen ? "open py-4" : ""} flex flex-col gap-4`}
       >
-        <a href="/about" className="nav-link">
+        <Link to="/about" className="nav-link">
           About Us
-        </a>
-        <a href="/services" className="nav-link">
+        </Link>
+        <Link to="/services" className="nav-link">
           Services
-        </a>
-        <a href="/case-studies" className="nav-link">
+        </Link>
+        <Link to="/case-studies" className="nav-link">
           Case Studies
-        </a>
-        <a href="/contact" className="nav-link">
+        </Link>
+        <Link to="/contact" className="nav-link">
           Contact us
-        </a>
+        </Link>
         <div className="flex gap-3 mt-2">
           <button
             className="text-[#f70c17] border border-[#D80712] flex items-center gap-1.5 px-3.5 py-1.5 rounded-[10px]  w-full"

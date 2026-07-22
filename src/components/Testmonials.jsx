@@ -49,11 +49,11 @@ export default function Testimonials() {
 
   return (
     <section className="testi-section">
-
       {/* Heading */}
       <div className="text-center mb-12" data-aos="fade-up">
         <h2 className="testi-heading">
-          What <span className="text-[#e0141e]">Our Clients</span> Says About Us?
+          What <span className="text-[#e0141e]">Our Clients</span> Says About
+          Us?
         </h2>
       </div>
 
@@ -76,7 +76,6 @@ export default function Testimonials() {
 
       {/* Swiper Wrapper */}
       <div className="testi-wrapper">
-
         {/* Desktop Left Arrow */}
         <button
           className="testi-arrow testi-arrow-desktop"
@@ -86,41 +85,50 @@ export default function Testimonials() {
           <FaArrowLeft />
         </button>
 
-        <Swiper
-          key={testimonials.length}
-          modules={[Autoplay]}
-          centeredSlides={true}
-          slidesPerView={1.4}
-          spaceBetween={20}
-          loop={false}
-          speed={800}
-          autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-          slideToClickedSlide={false}
-          breakpoints={{
-            0: { slidesPerView: 1.1 },
-            768: { slidesPerView: 1.3 },
-            1024: { slidesPerView: 1.4 },
-          }}
-          onSwiper={(swiper) => (swiperRef.current = swiper)}
-          onSlideChange={(swiper) => setIsBeginning(swiper.isBeginning)}
-          className={`testi-swiper ${isBeginning ? "is-beginning" : ""}`}
-        >
-          {testimonials.map((t) => (
-            <SwiperSlide key={t._id}>
-              <div className="testi-card">
-                <div className="testi-img-side">
-                  <img src={t.image} alt={t.name} className="testi-img" />
+        <div className="testi-swiper-container">
+          <Swiper
+            key={testimonials.length}
+            modules={[Autoplay]}
+            centeredSlides={true}
+            slidesPerView={1.4}
+            spaceBetween={20}
+            loop={false}
+            speed={800}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            slideToClickedSlide={false}
+            breakpoints={{
+              0: { slidesPerView: 1.1 },
+              768: { slidesPerView: 1.3 },
+              1024: { slidesPerView: 1.4 },
+            }}
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+            onSlideChange={(swiper) => setIsBeginning(swiper.isBeginning)}
+            className={`testi-swiper ${isBeginning ? "is-beginning" : ""}`}
+          >
+            {testimonials.map((t) => (
+              <SwiperSlide key={t._id}>
+                <div className="testi-card">
+                  <div className="testi-img-side">
+                    <img src={t.image} alt={t.name} className="testi-img" />
+                  </div>
+                  <div className="testi-content-side">
+                    <h4 className="testi-name">{t.name}</h4>
+                    <p className="testi-country">{t.country}</p>
+                    <Stars rating={t.rating} />
+                    <p className="testi-review">{t.review}</p>
+                  </div>
                 </div>
-                <div className="testi-content-side">
-                  <h4 className="testi-name">{t.name}</h4>
-                  <p className="testi-country">{t.country}</p>
-                  <Stars rating={t.rating} />
-                  <p className="testi-review">{t.review}</p>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {/* Right-side fade - background color mein smoothly fade karta hai taake peek wala card visually gayab ho jaye */}
+          <div className="testi-fade-right"></div>
+        </div>
 
         {/* Desktop Right Arrow */}
         <button
@@ -129,7 +137,6 @@ export default function Testimonials() {
         >
           <FaArrowRight />
         </button>
-
       </div>
     </section>
   );

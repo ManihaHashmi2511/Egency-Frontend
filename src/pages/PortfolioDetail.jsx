@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Navbar2 from "../components/Navbar2";
 import Footer from "../components/Footer";
@@ -78,9 +78,9 @@ export default function PortfolioDetail() {
       <div className="portfolio-detail-wrapper">
         {/* Section 1: Project Info */}
         <section className="pd-info-section">
-          <a href="/#portfolio" className="back-btn">
+          <Link to="/#portfolio" className="back-btn">
             <FaArrowLeft /> Back to Portfolio
-          </a>
+          </Link>
 
           <div className="pd-info-grid">
             <div className="pd-main-img-wrapper">

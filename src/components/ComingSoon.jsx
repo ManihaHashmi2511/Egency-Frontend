@@ -1,17 +1,35 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "../utils/apiUrl";
 
 export default function ComingSoon() {
+  const [banner, setBanner] = useState(null);
   const [timeLeft, setTimeLeft] = useState({});
 
   useEffect(() => {
-    // Event date — 45 days baad
-    const eventDate = new Date();
-    eventDate.setDate(eventDate.getDate() + 45);
+    axios
+      .get(`${API_URL}/coming-soon`)
+      .then((res) => {
+        const active = res.data.find((b) => b.isActive);
+        setBanner(active || null);
+      })
+      .catch((err) => console.log("Error:", err));
+  }, []);
+
+  useEffect(() => {
+    if (!banner?.eventDate) return;
+
+    const eventDate = new Date(banner.eventDate);
 
     const timer = setInterval(() => {
       const now = new Date();
       const diff = eventDate - now;
+
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
+        return;
+      }
 
       setTimeLeft({
         days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -22,32 +40,26 @@ export default function ComingSoon() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [banner]);
+
+  // Koi active banner na ho to section render hi nahi hota
+  if (!banner) return null;
 
   return (
     <section className="coming-soon-wrapper" data-aos="zoom-in" data-aos-delay="200" data-aos-duration="1000">
       <div className="coming-soon-box">
-
-        {/* Decorative Dots */}
         <div className="dot blue"></div>
         <div className="dot orange"></div>
         <div className="dot teal"></div>
         <div className="dot purple"></div>
 
-        {/* Left Content */}
         <div className="coming-soon-content">
           <h2 className="coming-soon-heading">
-            <span className="text-[#e90b16]">GRAPHIC DESIGN</span> EVENT <br />
-            COMING SOON!
+            <span className="text-[#e90b16]">{banner.highlightText}</span> {banner.headingRest}
           </h2>
 
-          <p className="coming-soon-para">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s.
-          </p>
+          <p className="coming-soon-para">{banner.description}</p>
 
-          {/* Timer */}
           <div className="coming-soon-timer">
             <div className="timer-box">
               <span className="timer-num">{timeLeft.days}</span>
@@ -70,14 +82,14 @@ export default function ComingSoon() {
             </div>
           </div>
 
-          <Link to={'/contact'} ><button className="btn-primary mt-6">Register now!</button></Link>
+          <Link to={banner.buttonLink || "/contact"}>
+            <button className="btn-primary mt-6">{banner.buttonText || "Register now!"}</button>
+          </Link>
         </div>
 
-        {/* Right Image */}
         <div className="coming-soon-img-wrapper">
-          <img src="/Man-img2.png" alt="Event" className="coming-soon-img" />
+          <img src={banner.image || "/Man-img2.png"} alt="Event" className="coming-soon-img" />
         </div>
-
       </div>
     </section>
   );

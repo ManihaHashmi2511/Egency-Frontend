@@ -27,7 +27,7 @@ function Portfolio() {
     return <p className="text-center py-10">No projects found.</p>;
 
   return (
-    <section className="px-[6%] py-15 mb-10">
+    <section id="portfolio" className="px-[6%] py-15 mb-10">
       <h2
         data-aos="fade-right"
         data-aos-delay="100"

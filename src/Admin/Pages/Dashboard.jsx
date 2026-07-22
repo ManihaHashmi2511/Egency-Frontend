@@ -66,7 +66,6 @@ const buildMonthlyGrowth = (blogs, portfolio) => {
   return months;
 };
 
-// pie ki jagah - category ko horizontal progress bars ki tarah dikhayenge (zyada modern lagta hai)
 const buildCategoryBreakdown = (portfolio) => {
   const counts = {};
   portfolio.forEach((item) => {
@@ -86,6 +85,7 @@ const buildCategoryBreakdown = (portfolio) => {
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
+  const isSuperAdmin = user.role === "superadmin";
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
@@ -128,49 +128,52 @@ const Dashboard = () => {
           unreadContacts,
         });
 
-        setMonthlyGrowth(buildMonthlyGrowth(blogs, portfolio));
-        setCategoryData(buildCategoryBreakdown(portfolio));
+        // Charts aur Recent Activity sirf Super Admin ke liye banate hain - Admin ko sirf cards dikhne hain
+        if (isSuperAdmin) {
+          setMonthlyGrowth(buildMonthlyGrowth(blogs, portfolio));
+          setCategoryData(buildCategoryBreakdown(portfolio));
 
-        const combined = [
-          ...blogs.map((b) => ({
-            label: b.title,
-            type: "New Blog",
-            date: b.createdAt,
-            icon: MdOutlineArticle,
-            color: "text-blue-500",
-          })),
-          ...portfolio.map((p) => ({
-            label: p.title,
-            type: "New Portfolio Project",
-            date: p.createdAt,
-            icon: MdOutlineCases,
-            color: "text-purple-500",
-          })),
-          ...testimonials.map((t) => ({
-            label: t.name,
-            type: "New Testimonial",
-            date: t.createdAt,
-            icon: MdOutlineRateReview,
-            color: "text-amber-500",
-          })),
-          ...team.map((t) => ({
-            label: t.name,
-            type: "New Team Member",
-            date: t.createdAt,
-            icon: MdOutlineGroups,
-            color: "text-emerald-500",
-          })),
-          ...contacts.map((c) => ({
-            label: c.name,
-            type: "New Contact Message",
-            date: c.createdAt,
-            icon: MdOutlineMailOutline,
-            color: "text-cyan-500",
-          })),
-        ];
+          const combined = [
+            ...blogs.map((b) => ({
+              label: b.title,
+              type: "New Blog",
+              date: b.createdAt,
+              icon: MdOutlineArticle,
+              color: "text-blue-500",
+            })),
+            ...portfolio.map((p) => ({
+              label: p.title,
+              type: "New Portfolio Project",
+              date: p.createdAt,
+              icon: MdOutlineCases,
+              color: "text-purple-500",
+            })),
+            ...testimonials.map((t) => ({
+              label: t.name,
+              type: "New Testimonial",
+              date: t.createdAt,
+              icon: MdOutlineRateReview,
+              color: "text-amber-500",
+            })),
+            ...team.map((t) => ({
+              label: t.name,
+              type: "New Team Member",
+              date: t.createdAt,
+              icon: MdOutlineGroups,
+              color: "text-emerald-500",
+            })),
+            ...contacts.map((c) => ({
+              label: c.name,
+              type: "New Contact Message",
+              date: c.createdAt,
+              icon: MdOutlineMailOutline,
+              color: "text-cyan-500",
+            })),
+          ];
 
-        combined.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setRecentActivity(combined.slice(0, 5));
+          combined.sort((a, b) => new Date(b.date) - new Date(a.date));
+          setRecentActivity(combined.slice(0, 5));
+        }
       } catch (error) {
         console.log("Dashboard stats fetch error:", error);
       } finally {
@@ -179,16 +182,63 @@ const Dashboard = () => {
     };
 
     fetchStats();
-  }, []);
+  }, [isSuperAdmin]);
 
   const statCards = [
-    { label: "Total Blogs", count: stats.blogs, icon: MdOutlineArticle, cardBg: "bg-blue-50", iconBg: "bg-blue-500" },
-    { label: "Portfolio Projects", count: stats.portfolio, icon: MdOutlineCases, cardBg: "bg-purple-50", iconBg: "bg-purple-500" },
-    { label: "Testimonials", count: stats.testimonials, icon: MdOutlineRateReview, cardBg: "bg-amber-50", iconBg: "bg-amber-500" },
-    { label: "Team Members", count: stats.team, icon: MdOutlineGroups, cardBg: "bg-emerald-50", iconBg: "bg-emerald-500" },
-    { label: "Contact Messages", count: stats.contacts, icon: MdOutlineMailOutline, cardBg: "bg-cyan-50", iconBg: "bg-cyan-500" },
-    { label: "Unread Messages", count: stats.unreadContacts, icon: MdMarkEmailUnread, cardBg: "bg-red-50", iconBg: "bg-red-500" },
+    {
+      label: "Total Blogs",
+      count: stats.blogs,
+      icon: MdOutlineArticle,
+      cardBg: "bg-blue-50",
+      iconBg: "bg-blue-500",
+      permissionKey: "blog",
+    },
+    {
+      label: "Portfolio Projects",
+      count: stats.portfolio,
+      icon: MdOutlineCases,
+      cardBg: "bg-purple-50",
+      iconBg: "bg-purple-500",
+      permissionKey: "portfolio",
+    },
+    {
+      label: "Testimonials",
+      count: stats.testimonials,
+      icon: MdOutlineRateReview,
+      cardBg: "bg-amber-50",
+      iconBg: "bg-amber-500",
+      permissionKey: "testimonials",
+    },
+    {
+      label: "Team Members",
+      count: stats.team,
+      icon: MdOutlineGroups,
+      cardBg: "bg-emerald-50",
+      iconBg: "bg-emerald-500",
+      permissionKey: "team",
+    },
+    {
+      label: "Contact Messages",
+      count: stats.contacts,
+      icon: MdOutlineMailOutline,
+      cardBg: "bg-cyan-50",
+      iconBg: "bg-cyan-500",
+      permissionKey: "contact",
+    },
+    {
+      label: "Unread Messages",
+      count: stats.unreadContacts,
+      icon: MdMarkEmailUnread,
+      cardBg: "bg-red-50",
+      iconBg: "bg-red-500",
+      permissionKey: "contact",
+    },
   ];
+
+  // Super Admin sab 6 cards dekhta hai; Admin sirf unhi cards ko jinke module ki permission usko mili hai
+  const visibleCards = isSuperAdmin
+    ? statCards
+    : statCards.filter((card) => user.permissions?.includes(card.permissionKey));
 
   return (
     <AdminLayout title="Dashboard">
@@ -201,93 +251,99 @@ const Dashboard = () => {
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(isSuperAdmin ? 6 : 3)].map((_, i) => (
             <div key={i} className="bg-gray-100 rounded-2xl h-24 animate-pulse"></div>
           ))}
         </div>
       ) : (
         <>
-          {/* STAT CARDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {statCards.map((card) => (
-              <StatCard key={card.label} {...card} />
-            ))}
-          </div>
-
-          {/* CHARTS ROW */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
-            {/* Line chart */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-              <h4 className="text-gray-800 font-semibold mb-5">Content Growth (Last 6 Months)</h4>
-              <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={monthlyGrowth}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="Blogs" stroke="#3b82f6" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Portfolio" stroke="#a855f7" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+          {visibleCards.length === 0 ? (
+            <p className="text-gray-400 text-base text-center py-10">
+              No modules assigned yet — contact your Super Admin
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {visibleCards.map((card) => (
+                <StatCard key={card.label} {...card} />
+              ))}
             </div>
+          )}
 
-            {/* Category breakdown - modern progress bars, pie ki jagah */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-              <h4 className="text-gray-800 font-semibold mb-5">Portfolio by Category</h4>
-              {categoryData.length === 0 ? (
-                <p className="text-gray-400 text-sm text-center py-16">
-                  Koi portfolio project abhi nahi hai
-                </p>
-              ) : (
-                <div className="flex flex-col gap-5">
-                  {categoryData.map((cat) => (
-                    <div key={cat.name}>
-                      <div className="flex justify-between items-center mb-1.5">
-                        <span className="text-sm font-medium text-gray-700">{cat.name}</span>
-                        <span className="text-sm text-gray-500">{cat.value} ({cat.percent}%)</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2.5">
-                        <div
-                          className="h-2.5 rounded-full transition-all"
-                          style={{ width: `${cat.percent}%`, backgroundColor: cat.color }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
+          {/* Charts aur Recent Activity sirf Super Admin ko dikhte hain */}
+          {isSuperAdmin && (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
+                <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                  <h4 className="text-gray-800 font-semibold mb-5">Content Growth (Last 6 Months)</h4>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <LineChart data={monthlyGrowth}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                      <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="Blogs" stroke="#3b82f6" strokeWidth={2} />
+                      <Line type="monotone" dataKey="Portfolio" stroke="#a855f7" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </div>
-              )}
-            </div>
-          </div>
 
-          {/* RECENT ACTIVITY */}
-          <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mt-8 mb-4">
-            <h4 className="text-gray-800 font-semibold mb-5">Recent Activity</h4>
-            {recentActivity.length === 0 ? (
-              <p className="text-gray-400 text-sm text-center py-6">Koi recent activity nahi</p>
-            ) : (
-              <div className="flex flex-col gap-4">
-                {recentActivity.map((item, index) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-4 last:pb-0"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className={`text-xl ${item.color}`} />
-                        <div>
-                          <p className="text-gray-800 text-sm font-medium">{item.label}</p>
-                          <p className="text-gray-400 text-xs mt-0.5">{item.type}</p>
+                <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
+                  <h4 className="text-gray-800 font-semibold mb-5">Portfolio by Category</h4>
+                  {categoryData.length === 0 ? (
+                    <p className="text-gray-400 text-sm text-center py-16">
+                      No portfolio projects yet
+                    </p>
+                  ) : (
+                    <div className="flex flex-col gap-5">
+                      {categoryData.map((cat) => (
+                        <div key={cat.name}>
+                          <div className="flex justify-between items-center mb-1.5">
+                            <span className="text-sm font-medium text-gray-700">{cat.name}</span>
+                            <span className="text-sm text-gray-500">{cat.value} ({cat.percent}%)</span>
+                          </div>
+                          <div className="w-full bg-gray-100 rounded-full h-2.5">
+                            <div
+                              className="h-2.5 rounded-full transition-all"
+                              style={{ width: `${cat.percent}%`, backgroundColor: cat.color }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                      <span className="text-gray-400 text-xs">{timeAgo(item.date)}</span>
+                      ))}
                     </div>
-                  );
-                })}
+                  )}
+                </div>
               </div>
-            )}
-          </div>
+
+              <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 mt-8 mb-4">
+                <h4 className="text-gray-800 font-semibold mb-5">Recent Activity</h4>
+                {recentActivity.length === 0 ? (
+                  <p className="text-gray-400 text-sm text-center py-6">No recent activity</p>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {recentActivity.map((item, index) => {
+                      const Icon = item.icon;
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-4 last:pb-0"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Icon className={`text-xl ${item.color}`} />
+                            <div>
+                              <p className="text-gray-800 text-sm font-medium">{item.label}</p>
+                              <p className="text-gray-400 text-xs mt-0.5">{item.type}</p>
+                            </div>
+                          </div>
+                          <span className="text-gray-400 text-xs">{timeAgo(item.date)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </>
       )}
     </AdminLayout>

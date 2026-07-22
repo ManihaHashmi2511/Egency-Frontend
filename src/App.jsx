@@ -33,11 +33,16 @@ import AdminCaseStudies from "./Admin/Pages/AdminCaseStudies";
 import AddEditCaseStudy from "./Admin/Pages/AddEditCaseStudy";
 import AdminContactMessages from "./Admin/Pages/ContactMessages";
 import ContactMessages from "./Admin/Pages/ContactMessages";
+import ScrollToTop from "./components/ScrollTop";
+import IndustryPortfolio from "./pages/IndustryPortfolio";
+import ComingSoonBanners from "./Admin/Pages/ComingSoonBanners";
+import AddEditComingSoon from "./Admin/Pages/AddEditComingSoon";
 
 export default function App() {
   return (
     <div>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -47,6 +52,7 @@ export default function App() {
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/industries" element={<Industries />} />
+          <Route path="/industries/:slug" element={<IndustryPortfolio />} />
 
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/portfolio/:id" element={<PortfolioDetail />} />
@@ -278,6 +284,33 @@ export default function App() {
             element={
               <ProtectedRoute requiredPermission="contact">
                 <ContactMessages />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Coming Soon banner */}
+
+          <Route
+            path="/admin/coming-soon"
+            element={
+              <ProtectedRoute requiredPermission="comingsoon">
+                <ComingSoonBanners />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/coming-soon/add"
+            element={
+              <ProtectedRoute requiredPermission="comingsoon">
+                <AddEditComingSoon />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/coming-soon/edit"
+            element={
+              <ProtectedRoute requiredPermission="comingsoon">
+                <AddEditComingSoon />
               </ProtectedRoute>
             }
           />

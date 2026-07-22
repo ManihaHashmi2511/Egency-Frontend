@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import AdminLayout from "../Components/AdminLayout";
 import GalleryDropzone from "../Components/GalleryDropzone";
 import api from "../../utils/api";
+import { industries } from "../../utils/industries";
 import Swal from "sweetalert2";
 import {
   MdArrowBack,
@@ -60,6 +61,7 @@ const AddEditPortfolio = () => {
     gallery: editingItem?.gallery || [],
     results:
       editingItem?.results?.length > 0 ? editingItem.results : [emptyResult()],
+    industries: editingItem?.industries || [],
   });
 
   const [preview, setPreview] = useState(editingItem?.image || null);
@@ -118,6 +120,18 @@ const AddEditPortfolio = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const toggleIndustry = (name) => {
+    setForm((prev) => {
+      const already = prev.industries.includes(name);
+      return {
+        ...prev,
+        industries: already
+          ? prev.industries.filter((i) => i !== name)
+          : [...prev.industries, name],
+      };
+    });
   };
 
   return (
@@ -318,17 +332,7 @@ const AddEditPortfolio = () => {
           </div>
         </div>
 
-        {/* GALLERY - ab drag-drop + URL dono support karta hai */}
-        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
-          <h4 className="text-lg font-semibold text-gray-800 mb-4">
-            Gallery Images
-          </h4>
-          <GalleryDropzone
-            images={form.gallery}
-            onChange={(newGallery) => setForm({ ...form, gallery: newGallery })}
-          />
-        </div>
-
+        {/* RESULTS / STATS */}
         <div>
           <div className="flex items-center justify-between mb-5">
             <h4 className="text-lg font-semibold text-gray-800">
@@ -394,6 +398,51 @@ const AddEditPortfolio = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* INDUSTRIES */}
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+          <h4 className="text-lg font-semibold text-gray-800 mb-4">
+            Related Industries
+          </h4>
+          <p className="text-gray-400 text-sm mb-4">
+            Select which industries this project belongs to — it will show up on
+            the matching Industry page
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {industries.map((ind) => {
+              const checked = form.industries.includes(ind.name);
+              return (
+                <label
+                  key={ind.slug}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm cursor-pointer transition-colors ${
+                    checked
+                      ? "bg-red-50 border-red-300 text-red-700"
+                      : "bg-white border-gray-200 text-gray-600"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleIndustry(ind.name)}
+                    className="accent-red-600 cursor-pointer"
+                  />
+                  {ind.name}
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* GALLERY - ab drag-drop + URL dono support karta hai */}
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+          <h4 className="text-lg font-semibold text-gray-800 mb-4">
+            Gallery Images
+          </h4>
+          <GalleryDropzone
+            images={form.gallery}
+            onChange={(newGallery) => setForm({ ...form, gallery: newGallery })}
+          />
         </div>
 
         <div className="flex gap-3 pt-2">

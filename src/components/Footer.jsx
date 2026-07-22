@@ -1,5 +1,12 @@
 import { Link } from "react-router-dom";
-import { FaWhatsapp, FaEnvelope, FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
+import {
+  FaWhatsapp,
+  FaEnvelope,
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTwitter,
+} from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 function Footer() {
@@ -18,8 +25,8 @@ function Footer() {
             />
           </Link>
           <p className="text-[#aaaaaa] text-[15px] leading-[1.75]">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum.
+            We are a digital agency that specializes in creating innovative
+            solutions for businesses of all sizes.
           </p>
         </div>
 
@@ -28,25 +35,25 @@ function Footer() {
             Quick links
           </h3>
           <Link
-            to={'/about'}
+            to={"/about"}
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
             About us
           </Link>
           <Link
-            to={'/services'}
+            to={"/services"}
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
             Services
           </Link>
           <Link
-            to={'/blog'}
+            to={"/blog"}
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
             Blogs
           </Link>
           <Link
-            to={'/case-studies'}
+            to={"/case-studies"}
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
             Case Studies
@@ -61,17 +68,17 @@ function Footer() {
           >
             Contact Us
           </Link>
-          <a
-            href="/services#faq"
+          <Link
+            to="/services#faq"
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
             FAQ's
-          </a>
+          </Link>
           <Link
             to="/industries"
             className="footer-link text-[#d6d4d4] text-base block mb-2.25"
           >
-           Insudtries We Serve
+            Industries We Serve
           </Link>
         </div>
 
@@ -104,7 +111,7 @@ function Footer() {
               <FaLinkedinIn size={14} />
             </a>
             <a href="#" className="footer-social-icon">
-              <FaXTwitter  size={14} />
+              <FaXTwitter size={14} />
             </a>
           </div>
         </div>
