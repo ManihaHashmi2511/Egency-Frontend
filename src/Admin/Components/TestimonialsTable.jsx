@@ -48,7 +48,7 @@ const TestimonialsTable = () => {
   const handleDelete = async (item) => {
     const confirm = await Swal.fire({
       title: `Delete testimonial from ${item.name}?`,
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",

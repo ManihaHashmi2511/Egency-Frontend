@@ -1,15 +1,8 @@
 import { useState } from "react";
 import api from "../../utils/api";
 import Swal from "sweetalert2";
-import {
-  MdClose,
-  MdOutlinePerson,
-  MdOutlineMailOutline,
-  MdOutlinePhone,
-  MdOutlineLock,
-  MdOutlineBadge,
-  MdKeyboardArrowDown,
-} from "react-icons/md";
+import ImageDropzone from "./ImageDropzone";
+import { MdClose } from "react-icons/md";
 
 const PERMISSION_MODULES = [
   { key: "comingsoon", label: "Coming Soon Banner" },
@@ -34,6 +27,7 @@ const StaffFormModal = ({ editingStaff, onClose, onSuccess }) => {
     password: "",
     role: editingStaff?.role || "user",
     permissions: editingStaff?.permissions || [],
+    profileImg: editingStaff?.profileImg || "",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -80,106 +74,90 @@ const StaffFormModal = ({ editingStaff, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      {/* OUTER WRAPPER - overflow-hidden yahan hai, isliye corners hamesha rounded rahenge chahe scrollbar aaye ya na aaye */}
-      <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
-        {/* HEADER - dark+red gradient, brand theme match */}
-        <div className="bg-linear-to-r from-[#1a1a1a] to-[#3d0e10] px-6 py-5 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center">
-              <MdOutlineBadge className="text-white text-xl" />
-            </div>
-            <h3 className="text-lg font-semibold text-white">
-              {isEditMode ? "Edit Staff Member" : "Add Staff Member"}
-            </h3>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-white/60 hover:text-white cursor-pointer transition-colors"
-          >
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {isEditMode ? "Edit Staff Member" : "Add Staff Member"}
+          </h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
             <MdClose className="text-2xl" />
           </button>
         </div>
 
-        {/* SCROLLABLE FORM AREA */}
         <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 p-6 flex flex-col gap-4">
           <div>
-            <label className="text-base font-medium text-gray-600 block mb-1.5">Full Name</label>
-            <div className="relative">
-              <MdOutlinePerson className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            <label className="text-base font-medium text-gray-600 block mb-2">Profile Picture</label>
+            <div className="w-24">
+              <ImageDropzone
+                value={form.profileImg}
+                onChange={(url) => setForm({ ...form, profileImg: url })}
+                shapeClass="rounded-full"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="text-base font-medium text-gray-600 block mb-1.5">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            />
           </div>
 
           <div>
             <label className="text-base font-medium text-gray-600 block mb-1.5">Email</label>
-            <div className="relative">
-              <MdOutlineMailOutline className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
-              />
-            </div>
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            />
           </div>
 
           <div>
             <label className="text-base font-medium text-gray-600 block mb-1.5">Phone</label>
-            <div className="relative">
-              <MdOutlinePhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-              <input
-                type="text"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
-              />
-            </div>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            />
           </div>
 
           <div>
             <label className="text-base font-medium text-gray-600 block mb-1.5">
               Password {isEditMode && <span className="text-gray-400 font-normal text-sm">(leave blank to keep current)</span>}
             </label>
-            <div className="relative">
-              <MdOutlineLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required={!isEditMode}
-                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
-              />
-            </div>
+            <input
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required={!isEditMode}
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-base focus:outline-none focus:ring-2 focus:ring-red-400"
+            />
           </div>
 
           <div>
             <label className="text-base font-medium text-gray-600 block mb-1.5">Role</label>
-            {/* CUSTOM DROPDOWN: appearance-none se native arrow hataya, apna chevron icon lagaya - ab overflow nahi karega */}
-            <div className="relative">
-              <select
-                name="role"
-                value={form.role}
-                onChange={handleChange}
-                className="w-full appearance-none px-4 py-2.5 pr-10 rounded-xl border border-gray-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400 bg-white"
-              >
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-                <option value="student">Student</option>
-              </select>
-              <MdKeyboardArrowDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl pointer-events-none" />
-            </div>
+            <select
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-400"
+            >
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+              <option value="student">Student</option>
+            </select>
           </div>
 
           <div>
@@ -210,7 +188,6 @@ const StaffFormModal = ({ editingStaff, onClose, onSuccess }) => {
           </div>
         </form>
 
-        {/* FOOTER - form ke bahar, scroll se independent, hamesha visible */}
         <div className="flex gap-3 p-6 pt-4 border-t border-gray-100 shrink-0">
           <button
             type="button"

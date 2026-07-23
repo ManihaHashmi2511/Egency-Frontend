@@ -48,7 +48,7 @@ const FAQsTable = () => {
   const handleDelete = async (faq) => {
     const confirm = await Swal.fire({
       title: "Delete this FAQ?",
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",

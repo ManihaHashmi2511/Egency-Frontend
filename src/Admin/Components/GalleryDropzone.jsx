@@ -20,7 +20,7 @@ const GalleryDropzone = ({ images, onChange }) => {
       console.log("Gallery upload error:", error);
       Swal.fire(
         "Upload Failed",
-        "Images upload nahi ho saki. Backend console check karo ke Cloudinary setup sahi hai ya nahi.",
+        "There was an error uploading one or more images. Please try again.",
         "error"
       );
     } finally {

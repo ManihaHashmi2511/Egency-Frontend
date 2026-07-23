@@ -37,7 +37,6 @@ const BlogPostsTable = () => {
     fetchBlogs();
   }, []);
 
-  // unique categories nikal ke filter dropdown banate hain, dynamic taake har naye category add hone pe khud-b-khud aa jaye
   const categories = [...new Set(blogs.map((b) => b.category).filter(Boolean))];
 
   const filtered = blogs.filter((b) => {
@@ -55,7 +54,7 @@ const BlogPostsTable = () => {
   const handleDelete = async (blog) => {
     const confirm = await Swal.fire({
       title: `Delete "${blog.title}"?`,
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",

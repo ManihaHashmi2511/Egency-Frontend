@@ -11,7 +11,6 @@ const Sidebar = ({ collapsed, mobileOpen, onCloseMobile }) => {
     return user.permissions?.includes(key);
   };
 
-  // Mobile pe drawer khula ho to hamesha full labels dikhte hain (icon-only sirf desktop-collapsed state mein)
   const iconOnly = collapsed && !mobileOpen;
 
   return (

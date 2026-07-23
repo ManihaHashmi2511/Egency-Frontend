@@ -37,6 +37,7 @@ const ManageTeamTable = () => {
       setStaff(res.data);
     } catch (error) {
       console.log("Staff fetch error:", error);
+      Swal.fire("Error", error.response?.data?.message || "Could not load staff list", "error");
     } finally {
       setLoading(false);
     }
@@ -73,7 +74,7 @@ const ManageTeamTable = () => {
 
     const confirm = await Swal.fire({
       title: `Delete ${member.name}?`,
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",
@@ -142,7 +143,7 @@ const ManageTeamTable = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-x-auto thin-scroll">
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-400 text-base">Loading staff...</div>
         ) : filteredStaff.length === 0 ? (
@@ -162,7 +163,22 @@ const ManageTeamTable = () => {
             <tbody>
               {filteredStaff.map((member) => (
                 <tr key={member._id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-5 py-4 font-medium text-gray-800">{member.name}</td>
+                  <td className="px-5 py-4 font-medium text-gray-800">
+                    <div className="flex items-center gap-3">
+                      {member.profileImg ? (
+                        <img
+                          src={member.profileImg}
+                          alt={member.name}
+                          className="w-9 h-9 rounded-full object-cover shrink-0"
+                        />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-sm font-semibold shrink-0">
+                          {member.name?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      {member.name}
+                    </div>
+                  </td>
 
                   <td className="px-5 py-4 text-gray-500">
                     <div className="flex items-center gap-1.5">

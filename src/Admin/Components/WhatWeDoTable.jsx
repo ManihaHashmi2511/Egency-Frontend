@@ -49,7 +49,7 @@ const WhatWeDoTable = () => {
       ]);
       fetchCards();
     } catch (error) {
-      Swal.fire("Error", "Reorder nahi ho saka, dobara try karo", "error");
+      Swal.fire("Error", "Could not reorder, please try again", "error");
     }
   };
 
@@ -66,7 +66,7 @@ const WhatWeDoTable = () => {
   const handleDelete = async (card) => {
     const confirm = await Swal.fire({
       title: `Delete "${card.title}"?`,
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",
@@ -93,7 +93,7 @@ const WhatWeDoTable = () => {
         </div>
         <div>
           <h3 className="text-xl font-semibold text-gray-800">What We Do Cards</h3>
-          <p className="text-gray-400 text-sm">Home page ke "What We Do" section ke cards</p>
+          <p className="text-gray-400 text-sm">Manage what we do cards</p>
         </div>
       </div>
 

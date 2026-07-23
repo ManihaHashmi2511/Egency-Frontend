@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AdminLayout from "../Components/AdminLayout";
 import StatCard from "../Components/StatCard";
 import api from "../../utils/api";
@@ -10,6 +11,10 @@ import {
   MdOutlineGroups,
   MdOutlineMailOutline,
   MdMarkEmailUnread,
+  MdOutlinePersonAdd,
+  MdOutlineEdit,
+  MdOutlineDelete,
+  MdOutlineLockReset,
 } from "react-icons/md";
 import {
   LineChart,
@@ -23,6 +28,20 @@ import {
 } from "recharts";
 
 const BAR_COLORS = ["#3b82f6", "#a855f7", "#f59e0b", "#10b981", "#ec4899", "#06b6d4"];
+
+const ACTION_ICONS = {
+  created: MdOutlinePersonAdd,
+  updated: MdOutlineEdit,
+  deleted: MdOutlineDelete,
+  password_changed: MdOutlineLockReset,
+};
+
+const ACTION_COLORS = {
+  created: "text-emerald-500",
+  updated: "text-blue-500",
+  deleted: "text-red-500",
+  password_changed: "text-amber-500",
+};
 
 const timeAgo = (dateString) => {
   const diffMs = new Date() - new Date(dateString);
@@ -40,7 +59,6 @@ const timeAgo = (dateString) => {
 const buildMonthlyGrowth = (blogs, portfolio) => {
   const months = [];
   const now = new Date();
-
   for (let i = 5; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     months.push({
@@ -50,7 +68,6 @@ const buildMonthlyGrowth = (blogs, portfolio) => {
       Portfolio: 0,
     });
   }
-
   const countInto = (items, field) => {
     items.forEach((item) => {
       const d = new Date(item.createdAt);
@@ -59,10 +76,8 @@ const buildMonthlyGrowth = (blogs, portfolio) => {
       if (bucket) bucket[field] += 1;
     });
   };
-
   countInto(blogs, "Blogs");
   countInto(portfolio, "Portfolio");
-
   return months;
 };
 
@@ -84,17 +99,13 @@ const buildCategoryBreakdown = (portfolio) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const isSuperAdmin = user.role === "superadmin";
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
-    blogs: 0,
-    portfolio: 0,
-    testimonials: 0,
-    team: 0,
-    contacts: 0,
-    unreadContacts: 0,
+    blogs: 0, portfolio: 0, testimonials: 0, team: 0, contacts: 0, unreadContacts: 0,
   });
   const [monthlyGrowth, setMonthlyGrowth] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
@@ -128,51 +139,13 @@ const Dashboard = () => {
           unreadContacts,
         });
 
-        // Charts aur Recent Activity sirf Super Admin ke liye banate hain - Admin ko sirf cards dikhne hain
         if (isSuperAdmin) {
           setMonthlyGrowth(buildMonthlyGrowth(blogs, portfolio));
           setCategoryData(buildCategoryBreakdown(portfolio));
 
-          const combined = [
-            ...blogs.map((b) => ({
-              label: b.title,
-              type: "New Blog",
-              date: b.createdAt,
-              icon: MdOutlineArticle,
-              color: "text-blue-500",
-            })),
-            ...portfolio.map((p) => ({
-              label: p.title,
-              type: "New Portfolio Project",
-              date: p.createdAt,
-              icon: MdOutlineCases,
-              color: "text-purple-500",
-            })),
-            ...testimonials.map((t) => ({
-              label: t.name,
-              type: "New Testimonial",
-              date: t.createdAt,
-              icon: MdOutlineRateReview,
-              color: "text-amber-500",
-            })),
-            ...team.map((t) => ({
-              label: t.name,
-              type: "New Team Member",
-              date: t.createdAt,
-              icon: MdOutlineGroups,
-              color: "text-emerald-500",
-            })),
-            ...contacts.map((c) => ({
-              label: c.name,
-              type: "New Contact Message",
-              date: c.createdAt,
-              icon: MdOutlineMailOutline,
-              color: "text-cyan-500",
-            })),
-          ];
-
-          combined.sort((a, b) => new Date(b.date) - new Date(a.date));
-          setRecentActivity(combined.slice(0, 5));
+          // Ab real activity log backend se aata hai - sab actions cover hote hain
+          const activityRes = await api.get("/activity-logs");
+          setRecentActivity(activityRes.data);
         }
       } catch (error) {
         console.log("Dashboard stats fetch error:", error);
@@ -185,57 +158,14 @@ const Dashboard = () => {
   }, [isSuperAdmin]);
 
   const statCards = [
-    {
-      label: "Total Blogs",
-      count: stats.blogs,
-      icon: MdOutlineArticle,
-      cardBg: "bg-blue-50",
-      iconBg: "bg-blue-500",
-      permissionKey: "blog",
-    },
-    {
-      label: "Portfolio Projects",
-      count: stats.portfolio,
-      icon: MdOutlineCases,
-      cardBg: "bg-purple-50",
-      iconBg: "bg-purple-500",
-      permissionKey: "portfolio",
-    },
-    {
-      label: "Testimonials",
-      count: stats.testimonials,
-      icon: MdOutlineRateReview,
-      cardBg: "bg-amber-50",
-      iconBg: "bg-amber-500",
-      permissionKey: "testimonials",
-    },
-    {
-      label: "Team Members",
-      count: stats.team,
-      icon: MdOutlineGroups,
-      cardBg: "bg-emerald-50",
-      iconBg: "bg-emerald-500",
-      permissionKey: "team",
-    },
-    {
-      label: "Contact Messages",
-      count: stats.contacts,
-      icon: MdOutlineMailOutline,
-      cardBg: "bg-cyan-50",
-      iconBg: "bg-cyan-500",
-      permissionKey: "contact",
-    },
-    {
-      label: "Unread Messages",
-      count: stats.unreadContacts,
-      icon: MdMarkEmailUnread,
-      cardBg: "bg-red-50",
-      iconBg: "bg-red-500",
-      permissionKey: "contact",
-    },
+    { label: "Total Blogs", count: stats.blogs, icon: MdOutlineArticle, cardBg: "bg-blue-50", iconBg: "bg-blue-500", permissionKey: "blog", path: "/admin/blog" },
+    { label: "Portfolio Projects", count: stats.portfolio, icon: MdOutlineCases, cardBg: "bg-purple-50", iconBg: "bg-purple-500", permissionKey: "portfolio", path: "/admin/portfolio" },
+    { label: "Testimonials", count: stats.testimonials, icon: MdOutlineRateReview, cardBg: "bg-amber-50", iconBg: "bg-amber-500", permissionKey: "testimonials", path: "/admin/testimonials" },
+    { label: "Team Members", count: stats.team, icon: MdOutlineGroups, cardBg: "bg-emerald-50", iconBg: "bg-emerald-500", permissionKey: "team", path: "/admin/team" },
+    { label: "Contact Messages", count: stats.contacts, icon: MdOutlineMailOutline, cardBg: "bg-cyan-50", iconBg: "bg-cyan-500", permissionKey: "contact", path: "/admin/contact" },
+    { label: "Unread Messages", count: stats.unreadContacts, icon: MdMarkEmailUnread, cardBg: "bg-red-50", iconBg: "bg-red-500", permissionKey: "contact", path: "/admin/contact" },
   ];
 
-  // Super Admin sab 6 cards dekhta hai; Admin sirf unhi cards ko jinke module ki permission usko mili hai
   const visibleCards = isSuperAdmin
     ? statCards
     : statCards.filter((card) => user.permissions?.includes(card.permissionKey));
@@ -245,9 +175,7 @@ const Dashboard = () => {
       <h3 className="text-2xl font-bold flex items-center text-gray-800">
         Hello, {user?.name}! <MdWavingHand className="ml-2 text-amber-500 text-3xl" />
       </h3>
-      <p className="text-gray-500 mt-2 mb-8">
-        Welcome to Egency Digital Admin Panel.
-      </p>
+      <p className="text-gray-500 mt-2 mb-8">Welcome to Egency Digital Admin Panel.</p>
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -264,12 +192,11 @@ const Dashboard = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {visibleCards.map((card) => (
-                <StatCard key={card.label} {...card} />
+                <StatCard key={card.label} {...card} onClick={() => navigate(card.path)} />
               ))}
             </div>
           )}
 
-          {/* Charts aur Recent Activity sirf Super Admin ko dikhte hain */}
           {isSuperAdmin && (
             <>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
@@ -291,9 +218,7 @@ const Dashboard = () => {
                 <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
                   <h4 className="text-gray-800 font-semibold mb-5">Portfolio by Category</h4>
                   {categoryData.length === 0 ? (
-                    <p className="text-gray-400 text-sm text-center py-16">
-                      No portfolio projects yet
-                    </p>
+                    <p className="text-gray-400 text-sm text-center py-16">No portfolio projects yet</p>
                   ) : (
                     <div className="flex flex-col gap-5">
                       {categoryData.map((cat) => (
@@ -321,21 +246,24 @@ const Dashboard = () => {
                   <p className="text-gray-400 text-sm text-center py-6">No recent activity</p>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    {recentActivity.map((item, index) => {
-                      const Icon = item.icon;
+                    {recentActivity.map((log) => {
+                      const Icon = ACTION_ICONS[log.action] || MdOutlineEdit;
+                      const color = ACTION_COLORS[log.action] || "text-gray-500";
                       return (
                         <div
-                          key={index}
+                          key={log._id}
                           className="flex items-center justify-between border-b border-gray-100 last:border-0 pb-4 last:pb-0"
                         >
                           <div className="flex items-center gap-3">
-                            <Icon className={`text-xl ${item.color}`} />
+                            <Icon className={`text-xl ${color}`} />
                             <div>
-                              <p className="text-gray-800 text-sm font-medium">{item.label}</p>
-                              <p className="text-gray-400 text-xs mt-0.5">{item.type}</p>
+                              <p className="text-gray-800 text-sm font-medium">{log.description}</p>
+                              <p className="text-gray-400 text-xs mt-0.5">
+                                by {log.performedByName} ({log.performedByRole})
+                              </p>
                             </div>
                           </div>
-                          <span className="text-gray-400 text-xs">{timeAgo(item.date)}</span>
+                          <span className="text-gray-400 text-xs shrink-0">{timeAgo(log.createdAt)}</span>
                         </div>
                       );
                     })}

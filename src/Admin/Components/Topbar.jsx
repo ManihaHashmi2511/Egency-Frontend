@@ -14,6 +14,13 @@ import axios from "axios";
 import { menuItems } from "../adminMenu";
 import { API_URL } from "../../utils/apiUrl";
 
+const ROLE_LABELS = {
+  superadmin: "Super Admin",
+  admin: "Admin",
+  user: "User",
+  student: "Student",
+};
+
 const Topbar = ({ title, onToggleSidebar }) => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -127,7 +134,6 @@ const Topbar = ({ title, onToggleSidebar }) => {
         </h2>
       </div>
 
-      {/* Search - chhoti screens pe hide, taake title/icons ko jagah mile */}
       <div className="relative flex-1 max-w-md hidden md:block" ref={searchRef}>
         <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
         <input
@@ -231,7 +237,15 @@ const Topbar = ({ title, onToggleSidebar }) => {
             onClick={() => setShowProfileMenu(!showProfileMenu)}
             className="flex items-center gap-2 text-gray-600 cursor-pointer hover:bg-gray-50 px-1.5 sm:px-2 py-1.5 rounded-xl transition"
           >
-            <FaUserCircle className="text-2xl text-red-500" />
+            {user.profileImg ? (
+              <img
+                src={user.profileImg}
+                alt={user.name}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            ) : (
+              <FaUserCircle className="text-2xl text-red-500" />
+            )}
             <div className="text-sm text-left hidden sm:block">
               <p className="font-semibold">{user.name}</p>
               <p className="text-xs text-gray-400 capitalize">{user.role}</p>
@@ -239,7 +253,24 @@ const Topbar = ({ title, onToggleSidebar }) => {
           </button>
 
           {showProfileMenu && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50">
+            <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden z-50">
+              {/* Profile header - bada picture, naam, role badge */}
+              <div className="flex flex-col items-center gap-2 px-5 py-6 border-b border-gray-100 bg-gray-50">
+                {user.profileImg ? (
+                  <img
+                    src={user.profileImg}
+                    alt={user.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-white shadow"
+                  />
+                ) : (
+                  <FaUserCircle className="text-6xl text-red-400" />
+                )}
+                <p className="text-base font-semibold text-gray-800 text-center">{user.name}</p>
+                <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 text-xs font-medium capitalize">
+                  {ROLE_LABELS[user.role] || user.role}
+                </span>
+              </div>
+
               <button
                 onClick={() => {
                   setShowProfileMenu(false);

@@ -38,7 +38,6 @@ const ServicesTable = () => {
     s.title?.toLowerCase().includes(search.toLowerCase())
   );
 
-  // do services ka "order" field aapas mein swap kar deta hai - isse list mein unki position badal jati hai
   const swapOrder = async (indexA, indexB) => {
     const listCopy = [...services];
     const itemA = listCopy[indexA];
@@ -51,7 +50,7 @@ const ServicesTable = () => {
       ]);
       fetchServices();
     } catch (error) {
-      Swal.fire("Error", "Reorder nahi ho saka, dobara try karo", "error");
+      Swal.fire("Error", "Could not reorder, please try again", "error");
     }
   };
 
@@ -68,7 +67,7 @@ const ServicesTable = () => {
   const handleDelete = async (service) => {
     const confirm = await Swal.fire({
       title: `Delete "${service.title}"?`,
-      text: "Ye action wapas nahi ho sakta",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc2626",
@@ -111,7 +110,7 @@ const ServicesTable = () => {
 
       {search && (
         <p className="text-gray-400 text-sm mb-3">
-          Reorder arrows sirf full list (bina search) mein kaam karte hain
+          Showing {filtered.length} result{filtered.length !== 1 && "s"} for "{search}"
         </p>
       )}
 

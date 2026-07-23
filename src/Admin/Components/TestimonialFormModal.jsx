@@ -100,7 +100,8 @@ const TestimonialFormModal = ({ editingItem, onClose, onSuccess }) => {
 
           <div>
             <label className="text-base font-medium text-gray-600 block mb-1.5">
-              Image URL <span className="text-gray-400 font-normal text-sm">(Cloudinary baaki hai, filhaal URL daalo)</span>
+              Image URL
+              <span className="text-gray-400 font-normal text-sm">Cloudinary is supported only for now </span>
             </label>
             <div className="relative">
               <MdOutlineImage className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />

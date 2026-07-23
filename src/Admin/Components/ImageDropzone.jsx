@@ -21,10 +21,10 @@ const ImageDropzone = ({ value, onChange, aspect = "aspect-square", shapeClass =
       setPreview(url);
     } catch (error) {
       console.log("Upload error:", error);
-      setPreview(value || null); // upload fail ho to purani/khaali state pe wapas le jao
+      setPreview(value || null); 
       Swal.fire(
         "Upload Failed",
-        "Image upload nahi ho saki. Backend console check karo ke Cloudinary setup sahi hai ya nahi.",
+        "There was an error uploading the image. Please try again.",
         "error"
       );
     } finally {

@@ -7,12 +7,13 @@ import ChangePasswordForm from "../Components/ChangePasswordForm";
 const Settings = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const isSuperAdmin = user.role === "superadmin";
+  const canChangePassword = user.role !== "admin"; // Admin role password change nahi kar sakta
 
   const [activeTab, setActiveTab] = useState("profile");
 
   const tabs = [
     { key: "profile", label: "My Profile" },
-    { key: "password", label: "Change Password" },
+    ...(canChangePassword ? [{ key: "password", label: "Change Password" }] : []),
     ...(isSuperAdmin ? [{ key: "team", label: "Manage Team" }] : []),
   ];
 
@@ -35,7 +36,7 @@ const Settings = () => {
       </div>
 
       {activeTab === "profile" && <ProfileForm />}
-      {activeTab === "password" && <ChangePasswordForm />}
+      {activeTab === "password" && canChangePassword && <ChangePasswordForm />}
       {activeTab === "team" && isSuperAdmin && <ManageTeamTable />}
     </AdminLayout>
   );

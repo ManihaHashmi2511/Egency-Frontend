@@ -1,7 +1,8 @@
-const StatCard = ({ label, count, icon: Icon, cardBg, iconBg }) => {
+const StatCard = ({ label, count, icon: Icon, cardBg, iconBg, onClick }) => {
   return (
     <div
-      className={`rounded-2xl shadow-sm p-5 flex items-center justify-between ${cardBg} hover:shadow-md transition-shadow`}
+      onClick={onClick}
+      className={`rounded-2xl shadow-sm p-5 flex items-center justify-between ${cardBg} hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer`}
     >
       <div>
         <p className="text-gray-600 text-base font-medium">{label}</p>
