@@ -39,7 +39,7 @@ const WorldMap = () => {
 
   const [selectedCountry, setSelectedCountry] = useState("Pakistan");
   const [selectedCityIndex, setSelectedCityIndex] = useState(2); // Lahore
-  const [hasSelected, setHasSelected] = useState(false); // zoom sirf user ke select karne ke baad
+  const [hasSelected, setHasSelected] = useState(false);
 
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.3 });
   const [values, setValues] = useState(stats.map(() => 0));
@@ -64,16 +64,22 @@ const WorldMap = () => {
   const currentCities = currentCountry?.cities || [];
   const selectedCity = currentCities[selectedCityIndex] || currentCities[0];
 
-  // Zoom target - sirf jab user ne khud koi city select ki ho
   const zoomTarget = hasSelected && selectedCity ? projection(selectedCity.coordinates) : null;
 
   const groupTransform = zoomTarget
     ? `translate(${WIDTH / 2 - zoomTarget[0] * ZOOM_SCALE}, ${HEIGHT / 2 - zoomTarget[1] * ZOOM_SCALE}) scale(${ZOOM_SCALE})`
     : "translate(0, 0) scale(1)";
 
-  
-  const currentScale = zoomTarget ? ZOOM_SCALE : 1;
-  const counterScale = 1 / currentScale;
+  const projectToPercent = (coords) => {
+    const [rawX, rawY] = projection(coords);
+    let finalX = rawX;
+    let finalY = rawY;
+    if (zoomTarget) {
+      finalX = (WIDTH / 2 - zoomTarget[0] * ZOOM_SCALE) + rawX * ZOOM_SCALE;
+      finalY = (HEIGHT / 2 - zoomTarget[1] * ZOOM_SCALE) + rawY * ZOOM_SCALE;
+    }
+    return { xPercent: (finalX / WIDTH) * 100, yPercent: (finalY / HEIGHT) * 100 };
+  };
 
   const handleCountryChange = (e) => {
     setSelectedCountry(e.target.value);
@@ -85,19 +91,16 @@ const WorldMap = () => {
     setSelectedCityIndex(Number(e.target.value));
     setHasSelected(true);
   };
-// reset zoom effect on mouse click
-  const handleMapClick = () => {
-    setHasSelected(false);
-  }
-  
+
   return (
-    <div className="wm-section" onClick={handleMapClick}>
+    <div className="wm-section">
       <div className="wm-heading">
         <h2 data-aos="fade-right" data-aos-duration="1000" data-aos-delay="200">
           We're global to privilege you
         </h2>
         <p data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-          Our offices are located in multiple countries, allowing us to provide localized support and services to our clients worldwide.
+          Sed ut perspiciatis unde omnis iste natus error sit voluptem suspec
+          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa.
         </p>
       </div>
 
@@ -148,7 +151,6 @@ const WorldMap = () => {
                   <path key={i} d={pathGenerator(geo)} fill="url(#dots)" stroke="none" />
                 ))}
 
-                {/* Permanent office pins + tooltip - SAME <g>, SAME raw coordinates */}
                 {officeLocations.map((loc) => {
                   const [x, y] = projection(loc.coordinates);
                   return (
@@ -158,79 +160,52 @@ const WorldMap = () => {
                         <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite" />
                       </circle>
                       <circle cx={x} cy={y} r={5} fill="#ff4500" />
-
-                      <foreignObject
-                        x={x - 110}
-                        y={y - 90}
-                        width={220}
-                        height={80}
-                        style={{ overflow: "visible", pointerEvents: "none" }}
-                      >
-                        <div
-                          xmlns="http://www.w3.org/1999/xhtml"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "flex-end",
-                            justifyContent: "center",
-                            transform: `scale(${counterScale})`,
-                            transformOrigin: "center bottom",
-                          }}
-                        >
-                          <div className="wm-tooltip-permanent">
-                            <strong>{loc.name.toUpperCase()}</strong>
-                            <span>{loc.area}</span>
-                          </div>
-                        </div>
-                      </foreignObject>
                     </g>
                   );
                 })}
 
-                {/* Searched city pin + tooltip - same treatment */}
-                {selectedCity &&
-                  (() => {
-                    const [x, y] = projection(selectedCity.coordinates);
-                    return (
-                      <g>
-                        <circle cx={x} cy={y} r={14} fill="rgba(37,99,235,0.18)">
-                          <animate attributeName="r" from="8" to="18" dur="1.6s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" from="0.7" to="0" dur="1.6s" repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={x} cy={y} r={7} fill="#2563eb" stroke="#fff" strokeWidth="2" />
-
-                        <foreignObject
-                          x={x - 110}
-                          y={y - 95}
-                          width={220}
-                          height={80}
-                          style={{ overflow: "visible", pointerEvents: "none" }}
-                        >
-                          <div
-                            xmlns="http://www.w3.org/1999/xhtml"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "flex-end",
-                              justifyContent: "center",
-                              transform: `scale(${counterScale})`,
-                              transformOrigin: "center bottom",
-                            }}
-                          >
-                            <div className="wm-tooltip-search">
-                              <strong>{selectedCity.name.toUpperCase()}</strong>
-                              <span>{selectedCountry}</span>
-                            </div>
-                          </div>
-                        </foreignObject>
-                      </g>
-                    );
-                  })()}
+                {selectedCity && (() => {
+                  const [x, y] = projection(selectedCity.coordinates);
+                  return (
+                    <g>
+                      <circle cx={x} cy={y} r={14} fill="rgba(37,99,235,0.18)">
+                        <animate attributeName="r" from="8" to="18" dur="1.6s" repeatCount="indefinite" />
+                        <animate attributeName="opacity" from="0.7" to="0" dur="1.6s" repeatCount="indefinite" />
+                      </circle>
+                      <circle cx={x} cy={y} r={7} fill="#2563eb" stroke="#fff" strokeWidth="2" />
+                    </g>
+                  );
+                })()}
               </g>
             </g>
           </svg>
+
+          {officeLocations.map((loc) => {
+            const { xPercent, yPercent } = projectToPercent(loc.coordinates);
+            return (
+              <div
+                key={loc.name}
+                className="wm-tooltip-permanent"
+                style={{ left: `${xPercent}%`, top: `${yPercent}%` }}
+              >
+                <strong>{loc.name.toUpperCase()}</strong>
+                <span>{loc.area}</span>
+              </div>
+            );
+          })}
+
+          {selectedCity && (() => {
+            const { xPercent, yPercent } = projectToPercent(selectedCity.coordinates);
+            return (
+              <div
+                className="wm-tooltip-search"
+                style={{ left: `${xPercent}%`, top: `${yPercent}%` }}
+              >
+                <strong>{selectedCity.name.toUpperCase()}</strong>
+                <span>{selectedCountry}</span>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
