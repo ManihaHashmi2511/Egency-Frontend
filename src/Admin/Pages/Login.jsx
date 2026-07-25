@@ -107,7 +107,7 @@ const Login = () => {
       <div
         className="hidden md:block md:w-[65%] relative"
         style={{
-          backgroundImage: `url('/side-img2.jpg')`,
+          backgroundImage: `url('/side-img2.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
