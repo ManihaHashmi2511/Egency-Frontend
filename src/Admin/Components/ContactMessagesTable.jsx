@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import Swal from "sweetalert2";
+import Pagination from "./Pagination";
 import {
   MdSearch,
   MdOutlineDelete,
@@ -12,12 +13,15 @@ import {
   MdKeyboardArrowDown,
 } from "react-icons/md";
 
+const ITEMS_PER_PAGE = 7;
+
 const ContactMessagesTable = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchMessages = async () => {
     try {
@@ -46,7 +50,16 @@ const ContactMessagesTable = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // message khulte hi automatically read mark ho jata hai
+  // Search/filter badalte hi wapas page 1 pe le jate hain, warna khali page dikh sakta hai
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
+
+  const paginatedMessages = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   const openMessage = async (msg) => {
     setSelectedMessage(msg);
     if (!msg.isRead) {
@@ -116,48 +129,56 @@ const ContactMessagesTable = () => {
       ) : filtered.length === 0 ? (
         <div className="text-center text-gray-400 text-base py-14">No messages found</div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {filtered.map((msg) => (
-            <div
-              key={msg._id}
-              onClick={() => openMessage(msg)}
-              className={`bg-white rounded-2xl border p-5 flex items-center gap-4 cursor-pointer hover:shadow-md transition-all ${
-                !msg.isRead ? "border-red-200 bg-red-50/30" : "border-gray-100"
-              }`}
-            >
-              <div className="w-11 h-11 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-base font-semibold shrink-0">
-                {msg.name?.charAt(0).toUpperCase()}
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  {!msg.isRead && <MdCircle className="text-red-500 text-[8px] shrink-0" />}
-                  <h4 className="text-base font-semibold text-gray-800 truncate">{msg.name}</h4>
-                </div>
-                <p className="text-gray-500 text-sm truncate">{msg.message}</p>
-              </div>
-
-              <div className="text-right shrink-0">
-                <p className="text-gray-400 text-sm">
-                  {new Date(msg.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete(msg);
-                }}
-                className="p-2.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer transition-colors shrink-0"
+        <>
+          <div className="flex flex-col gap-3">
+            {paginatedMessages.map((msg) => (
+              <div
+                key={msg._id}
+                onClick={() => openMessage(msg)}
+                className={`bg-white rounded-2xl border p-5 flex items-center gap-4 cursor-pointer hover:shadow-md transition-all ${
+                  !msg.isRead ? "border-red-200 bg-red-50/30" : "border-gray-100"
+                }`}
               >
-                <MdOutlineDelete className="text-xl" />
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="w-11 h-11 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-base font-semibold shrink-0">
+                  {msg.name?.charAt(0).toUpperCase()}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    {!msg.isRead && <MdCircle className="text-red-500 text-[8px] shrink-0" />}
+                    <h4 className="text-base font-semibold text-gray-800 truncate">{msg.name}</h4>
+                  </div>
+                  <p className="text-gray-500 text-sm truncate">{msg.message}</p>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <p className="text-gray-400 text-sm">
+                    {new Date(msg.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(msg);
+                  }}
+                  className="p-2.5 rounded-lg hover:bg-red-50 text-red-600 cursor-pointer transition-colors shrink-0"
+                >
+                  <MdOutlineDelete className="text-xl" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <Pagination
+            currentPage={currentPage}
+            totalItems={filtered.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={setCurrentPage}
+          />
+        </>
       )}
 
-      {/* VIEW MESSAGE MODAL */}
       {selectedMessage && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col">

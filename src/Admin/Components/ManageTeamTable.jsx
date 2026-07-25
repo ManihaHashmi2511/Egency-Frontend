@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import StaffFormModal from "./StaffFormModal";
+import Pagination from "./Pagination";
 import Swal from "sweetalert2";
 import {
   MdSearch,
@@ -12,6 +13,8 @@ import {
   MdOutlinePhone,
   MdKeyboardArrowDown,
 } from "react-icons/md";
+
+const ITEMS_PER_PAGE = 7;
 
 const ROLE_STYLES = {
   superadmin: "bg-purple-100 text-purple-700",
@@ -26,6 +29,7 @@ const ManageTeamTable = () => {
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingStaff, setEditingStaff] = useState(null);
@@ -55,6 +59,15 @@ const ManageTeamTable = () => {
     const matchesStatus = statusFilter === "all" || member.status === statusFilter;
     return matchesSearch && matchesRole && matchesStatus;
   });
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, roleFilter, statusFilter]);
+
+  const paginatedStaff = filteredStaff.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   const handleAddClick = () => {
     setEditingStaff(null);
@@ -161,7 +174,7 @@ const ManageTeamTable = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredStaff.map((member) => (
+              {paginatedStaff.map((member) => (
                 <tr key={member._id} className="border-t border-gray-100 hover:bg-gray-50">
                   <td className="px-5 py-4 font-medium text-gray-800">
                     <div className="flex items-center gap-3">
@@ -263,6 +276,13 @@ const ManageTeamTable = () => {
           </table>
         )}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalItems={filteredStaff.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+      />
 
       {modalOpen && (
         <StaffFormModal

@@ -124,10 +124,6 @@ const WorldMap = () => {
             <MdKeyboardArrowDown className="wm-select-arrow" />
           </div>
         </div>
-
-        <button className="wm-btn" onClick={() => navigate("/services")}>
-          See Services
-        </button>
       </div>
 
       <div className="wm-map-outer" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="300">

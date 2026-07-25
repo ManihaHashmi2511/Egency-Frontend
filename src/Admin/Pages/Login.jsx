@@ -6,11 +6,13 @@ import { FaWandMagicSparkles } from "react-icons/fa6";
 import { FaNodeJs, FaReact } from "react-icons/fa";
 import { SiMongodb } from "react-icons/si";
 import { RiTailwindCssFill } from "react-icons/ri";
+import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 import { API_URL } from "../../utils/apiUrl";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -71,15 +73,24 @@ const Login = () => {
 
             <div>
               <label className="text-gray-600 text-sm mb-1 block">Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Your Password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition text-gray-700"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Your Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 pr-11 rounded-xl border border-gray-200 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition text-gray-700"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                >
+                  {showPassword ? <MdOutlineVisibilityOff className="text-xl" /> : <MdOutlineVisibility className="text-xl" />}
+                </button>
+              </div>
             </div>
 
             <button
