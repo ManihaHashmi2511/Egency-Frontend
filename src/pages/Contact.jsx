@@ -139,7 +139,7 @@ const Contact = () => {
                     <FaEnvelope />
                   </div>
                   <h4>Email Address</h4>
-                  <p>hello@egencydigital.com</p>
+                  <p>info@egencydigital.com</p>
                   <p>egencydigitalinfo@gmail.com</p>
                 </div>
 
