@@ -150,25 +150,7 @@ export default function PortfolioDetail() {
           </div>
         </section>
 
-        {/* Section 3: Gallery */}
-        <section className="pd-gallery-section">
-          <h2 className="pd-section-heading">
-            Project <span className="text-red-500">Gallery</span>
-          </h2>
-          <div className="pd-gallery-grid">
-            {project.gallery.map((img, i) => (
-              <div key={i} className="pd-gallery-item">
-                <img
-                  src={img}
-                  alt={`Gallery ${i + 1}`}
-                  className="pd-gallery-img"
-                />
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Section 4: Results */}
+         {/* Section 3: Results */}
         <section className="pd-results-section">
           <h2 className="pd-section-heading">
             Project <span className="text-red-500">Results</span>
@@ -190,6 +172,26 @@ export default function PortfolioDetail() {
             ))}
           </div>
         </section>
+
+        {/* Section 4: Gallery */}
+        <section className="pd-gallery-section">
+          <h2 className="pd-section-heading">
+            Project <span className="text-red-500">Gallery</span>
+          </h2>
+          <div className="pd-gallery-grid">
+            {project.gallery.map((img, i) => (
+              <div key={i} className="pd-gallery-item">
+                <img
+                  src={img}
+                  alt={`Gallery ${i + 1}`}
+                  className="pd-gallery-img"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+       
 
         {/* Section 5: Next/Prev */}
         <section className="pd-nav-section">
