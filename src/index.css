@@ -2478,6 +2478,110 @@ h2{
   margin-left: auto;
 }
 
+
+
+/* ===== Portfolio Detail - Responsive ===== */
+
+@media (max-width: 900px) {
+  .pd-info-grid {
+    flex-direction: column;
+  }
+
+  .pd-main-img-wrapper,
+  .pd-details {
+    width: 100%;
+  }
+
+  .pd-main-img {
+    height: 320px;
+  }
+
+  .pd-cs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pd-results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .portfolio-detail-wrapper {
+    padding: 50px 16px 10px;
+  }
+
+  .pd-main-img {
+    height: 220px;
+  }
+
+  .pd-title {
+    margin-bottom: 20px;
+  }
+
+  .pd-gallery-img {
+    height: 200px;
+  }
+
+  .pd-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .pd-result-card {
+    padding: 20px 12px;
+  }
+
+  .pd-result-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+  }
+
+  .pd-result-number {
+    font-size: 28px;
+  }
+
+  .pd-buttons {
+    flex-wrap: wrap;
+  }
+
+  .pd-btn-primary,
+  .pd-btn-secondary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .pd-cs-box {
+    padding: 22px;
+  }
+
+  .pd-nav-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .pd-nav-btn {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .pd-nav-next {
+    margin-left: 0;
+  }
+}
+
+
+
+
 /* =========================================================================== */
 /* -----------------------------CONTACT PAGE ------------------------ */
 /* =========================================================================== */
