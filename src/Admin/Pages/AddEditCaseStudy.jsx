@@ -60,7 +60,6 @@ const AddEditCaseStudy = () => {
     handleFile(e.dataTransfer.files[0]);
   };
 
-  // SERVICES chip input - Enter ya comma se add hota hai
   const handleServiceKeyDown = (e) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();

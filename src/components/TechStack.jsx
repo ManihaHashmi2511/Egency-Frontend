@@ -152,7 +152,6 @@ const TechStack = () => {
               const baseAngle = (360 / activeTechs.length) * i;
               const angle = baseAngle + rotation - 90;
 
-              // Percentage mein position - wrapper size se independent
               const xPercent = 50 + 45 * Math.cos((angle * Math.PI) / 180);
               const yPercent = 50 + 45 * Math.sin((angle * Math.PI) / 180);
 

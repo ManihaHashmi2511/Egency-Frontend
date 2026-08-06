@@ -143,7 +143,6 @@ const Dashboard = () => {
           setMonthlyGrowth(buildMonthlyGrowth(blogs, portfolio));
           setCategoryData(buildCategoryBreakdown(portfolio));
 
-          // Ab real activity log backend se aata hai - sab actions cover hote hain
           const activityRes = await api.get("/activity-logs");
           setRecentActivity(activityRes.data);
         }

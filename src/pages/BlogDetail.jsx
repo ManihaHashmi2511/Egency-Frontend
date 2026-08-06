@@ -15,7 +15,7 @@ const BlogDetail = () => {
   useEffect(() => {
     setLoading(true);
 
-    // Current blog fetch karo uski id se
+    // fetch Current blog by its id 
     axios
       .get(`${API_URL}/blogs/${id}`)
       .then((res) => {
@@ -28,7 +28,7 @@ const BlogDetail = () => {
         setLoading(false);
       });
 
-    // Related blogs ke liye poori list fetch karo
+    // Related blogs ke liye poori list fetch krne ke liye
     axios
       .get(`${API_URL}/blogs`)
       .then((res) => {
@@ -40,7 +40,7 @@ const BlogDetail = () => {
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
 
-  // Blog nahi mila
+  // Blog not found
   if (!blog) {
     return (
       <div className="not-found">

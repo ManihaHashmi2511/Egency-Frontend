@@ -9,8 +9,7 @@ import {
   FaHome,
 } from "react-icons/fa";
 
-// Shared industries list - Industries page, Portfolio admin form, aur Industry-wise portfolio page
-// sab isi ek list ko use karte hain, taake kahin bhi mismatch na ho
+// Shared industries list on  Industries page, Portfolio admin form, aur Industry-wise portfolio page
 export const industries = [
   {
     slug: "ecommerce-retail",

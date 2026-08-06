@@ -28,7 +28,7 @@ const ProfileForm = () => {
       const updatedUser = { ...storedUser, ...res.data.update };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       Swal.fire("Updated", "Profile updated successfully", "success");
-      window.location.reload(); // Topbar mein naya avatar turant reflect ho jaye
+      window.location.reload(); 
     } catch (error) {
       Swal.fire("Error", error.response?.data?.message || "Something went wrong", "error");
     } finally {

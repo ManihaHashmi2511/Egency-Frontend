@@ -27,13 +27,13 @@ export default function Blog() {
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
 
-  // Featured blog dhoondo (jiska featured: true hai)
+  //Find Featured blog  (jiska featured true ho)
   const featuredBlog = blogs.find((b) => b.featured === true);
 
-  // Baaki blogs (featured wala grid mein repeat na ho isliye alag kiya)
+  // Other blogs
   const otherBlogs = blogs.filter((b) => b.featured !== true);
 
-  // Search term ke hisaab se title ya category match karo
+  // Search term ke hisaab se title ya category match ho
   const filteredBlogs = otherBlogs.filter((blog) => {
     const term = searchTerm.toLowerCase();
     return (

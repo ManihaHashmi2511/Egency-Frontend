@@ -7,7 +7,7 @@ import ChangePasswordForm from "../Components/ChangePasswordForm";
 const Settings = () => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
   const isSuperAdmin = user.role === "superadmin";
-  const canChangePassword = user.role !== "admin"; // Admin role password change nahi kar sakta
+  const canChangePassword = user.role !== "admin"; // Admin cannot change password from settings, only superadmin can
 
   const [activeTab, setActiveTab] = useState("profile");
 

@@ -19,7 +19,7 @@ const IndustryPortfolio = () => {
     axios
       .get(`${API_URL}/portfolio`)
       .then((res) => {
-        // sirf wahi projects rakhte hain jinke "industries" array mein ye industry name maujood hai
+        // sirf wahi projects honge jinke "industries" array mein ye industry name maujood hai
         const filtered = res.data.filter((p) =>
           p.industries?.includes(industry?.name)
         );

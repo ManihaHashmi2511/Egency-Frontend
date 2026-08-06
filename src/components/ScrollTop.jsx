@@ -12,7 +12,7 @@ const ScrollToTop = () => {
     if (hash) {
       const id = hash.replace("#", "");
       let attempts = 0;
-      const maxAttempts = 30; // 3 second tak retry karega jab tak element mile
+      const maxAttempts = 30; 
 
       const scrollToElement = () => {
         const el = document.getElementById(id);
@@ -25,7 +25,6 @@ const ScrollToTop = () => {
         const el = document.getElementById(id);
         if (el) {
           scrollToElement();
-          // Corrective re-scroll thodi der baad - agar images load hone se page shift hua ho, wapas sahi jagah le jata hai
           setTimeout(scrollToElement, 600);
         } else if (attempts < maxAttempts) {
           attempts++;

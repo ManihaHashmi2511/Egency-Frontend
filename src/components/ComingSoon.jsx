@@ -42,7 +42,6 @@ export default function ComingSoon() {
     return () => clearInterval(timer);
   }, [banner]);
 
-  // Koi active banner na ho to section render hi nahi hota
   if (!banner) return null;
 
   return (

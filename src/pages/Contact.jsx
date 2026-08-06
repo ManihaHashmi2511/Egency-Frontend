@@ -8,7 +8,7 @@ import Navbar2 from "../components/Navbar2";
 import Footer from "../components/Footer";
 import { API_URL } from "../utils/apiUrl";
 
-// Common fake/placeholder domains - inhe reject karte hain (jaise test123@test.com)
+// Common fake/placeholder domains - reject these fake emails.
 const FAKE_EMAIL_DOMAINS = [
   "test.com",
   "example.com",

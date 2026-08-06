@@ -8,10 +8,10 @@ const AdminLayout = ({ title, children }) => {
 
   const toggleSidebar = () => {
   if (window.innerWidth >= 1024) {
-    // Desktop: sirf collapse/expand
+    // collapse/expand on desktop view
     setCollapsed(!collapsed);
   } else {
-    // Mobile: sirf drawer open/close
+    // drawer open/close on mobile view
     setMobileOpen(!mobileOpen);
   }
 };

@@ -8,7 +8,7 @@ const FAQsSection = () => {
   const [faqs, setFaqs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Pehla FAQ (index 0) by default open rahega
+  // fisrt index 0 remain open by default  
   const [openIndex, setOpenIndex] = useState(0);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const FAQsSection = () => {
   }, []);
 
   const toggleFaq = (index) => {
-    // Agar already open hai to band kardo, warna usi ko open kardo
+    // if alrady open the close it, otherwise open the closed one
     setOpenIndex(openIndex === index ? null : index);
   };
 

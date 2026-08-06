@@ -23,7 +23,7 @@ export default function CaseStudies() {
   const [caseStudies, setCaseStudies] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Active filter track karo
+  // track Active filter
   const [activeFilter, setActiveFilter] = useState("All");
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function CaseStudies() {
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
 
-  // Filter logic — All selected ho to sab dikhao, warna category match karo
+  // Filter logic — All selected ho to sab show hoga, warna category match krni pregi
   const filtered =
     activeFilter === "All"
       ? caseStudies

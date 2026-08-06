@@ -43,7 +43,7 @@ const ServicesSlider = ({ bgColor = "#111111" }) => {
         setStep(gapPx);
       }
     };
-    // thoda delay taaki images/layout settle ho jaye
+  
     const timer = setTimeout(measureStep, 50);
     window.addEventListener("resize", measureStep);
     return () => {

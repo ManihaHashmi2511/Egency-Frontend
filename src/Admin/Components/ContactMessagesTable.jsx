@@ -50,7 +50,6 @@ const ContactMessagesTable = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Search/filter badalte hi wapas page 1 pe le jate hain, warna khali page dikh sakta hai
   useEffect(() => {
     setCurrentPage(1);
   }, [search, statusFilter]);

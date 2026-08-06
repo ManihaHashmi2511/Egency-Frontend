@@ -38,7 +38,7 @@ export default function PortfolioDetail() {
   useEffect(() => {
     setLoading(true);
 
-    // Current project fetch karo
+    // fetch Current project  
     axios
       .get(`${API_URL}/portfolio/${id}`)
       .then((res) => {
@@ -51,7 +51,7 @@ export default function PortfolioDetail() {
         setLoading(false);
       });
 
-    // Prev/Next navigation ke liye poori list (order ke hisaab se sorted) fetch karo
+    // Prev/Next navigation ke liye
     axios
       .get(`${API_URL}/portfolio`)
       .then((res) => setAllProjects(res.data))
@@ -63,7 +63,7 @@ export default function PortfolioDetail() {
   if (!project)
     return <div className="text-center py-20">Project not found!</div>;
 
-  // order field se prev/next nikalo (MongoDB _id sequential nahi hota, isliye order use karte hain)
+  // order field se prev/next project find krne ke liye
   const currentIndex = allProjects.findIndex((p) => p._id === project._id);
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
   const nextProject =
